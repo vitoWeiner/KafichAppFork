@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+    <h1>This is our homepage</h1>
+
+    {% if user.is_authenticated %}
+        <p>Vaše ime: {{ user.username }}</p>  
+
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit">Log out</button>
+        </form>
+
+
+        <a href="{% url 'main:show_other_users' %}">
+            <button type="button">Prikaz drugih korisnika</button>
+        </a>
+
+
+    {% else %}
+        <p>Niste prijavljeni.</p> 
+    {% endif %}
+    
+
+</body>
+</html>

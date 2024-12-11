@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Obriši korisnika</title>
+</head>
+<body>
+    <h1>Obriši korisnika</h1>
+    <p>Jeste li sigurni da želite obrisati korisnika {{ user.username }}?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Obriši</button>
+    </form>
+    <a href="{% url 'main:manage_users' %}">Nazad</a>
+</body>
+</html>

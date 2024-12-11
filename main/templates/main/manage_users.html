@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upravljanje korisnicima</title>
+</head>
+<body>
+    <h1>Upravljanje korisnicima</h1>
+    <a href="{% url 'main:homepage' %}">Nazad na početnu</a>
+    <a href="{% url 'main:add_user' %}">Dodaj novog korisnika</a> 
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Korisničko ime</th>
+            <th>Email</th>
+            <th>Akcije</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+
+
+                
+               
+                <span>Bez pristupa</span>
+
+           
+
+                <a href="{% url 'main:edit_user' user.id %}">Uredi</a>
+                <a href="{% url 'main:delete_user' user.id %}" onclick="return confirm('Jeste li sigurni?');">Obriši</a>
+
+             
+
+
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

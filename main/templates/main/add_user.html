@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodaj novog korisnika</title>
+</head>
+<body>
+    <h1>Dodaj novog korisnika</h1>
+    <a href="{% url 'main:manage_users' %}">Nazad na upravljanje korisnicima</a>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}  
+        <button type="submit">Spremi korisnika</button>
+    </form>
+</body>
+</html>

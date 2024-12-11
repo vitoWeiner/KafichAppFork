@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+    <h1>This is our Admin homepage</h1>
+
+    {% if user.is_authenticated %}
+        <p>Vaše ime: {{ user.username }}</p> 
+
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit">Log out</button>
+        </form>
+
+        <a href="{% url 'main:manage_users' %}">
+            <button>Upravljanje korisnicima</button>
+        </a>
+
+
+    {% else %}
+        <p>Niste prijavljeni.</p> 
+    {% endif %}
+    
+
+</body>
+</html>

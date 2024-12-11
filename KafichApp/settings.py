@@ -27,6 +27,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGIN_REDIRECT_URL = '/'    # ako je prijava uspjesna korisnik se redirekcira na homepage
+
+LOGOUT_REDIRECT_URL = '/accounts/login'  # kada se korisnik izlogira odvest ce ga na ovaj url
+
 
 # Application definition
 

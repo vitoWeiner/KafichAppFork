@@ -1,0 +1,26 @@
+<!-- main/templates/main/show_other_users.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prikaz drugih korisnika</title>
+</head>
+<body>
+    <h1>Popis drugih korisnika</h1>
+    <a href="{% url 'main:homepage' %}">Nazad na početnu</a>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Korisničko ime</th>
+            <th>Email</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
