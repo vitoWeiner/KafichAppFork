@@ -16,5 +16,8 @@ urlpatterns += [
     path('delete-user/<int:user_id>/', views.delete_user, name='delete_user'),
     path('add-user/', views.add_user, name='add_user'),
     path('show-other-users/', views.show_other_users, name='show_other_users'),
+    path('lista-pica', views.PiceListView.as_view(), name='drink_list_view'),
+    path('dodaj-pice/', views.dodaj_pice, name='dodaj_pice'),
+    path('pice/<int:pk>/', views.PiceDetailView.as_view(), name='pice_detail'),
 ]
 

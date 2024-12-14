@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodaj Piće</title>
+</head>
+<body>
+
+    <h1>Dodaj Novo Piće</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Dodaj piće</button>
+    </form>
+
+    <a href="{% url 'main:drink_list_view' %}">
+        <button>Povratak na listu pića</button>
+    </a>
+
+</body>
+</html>

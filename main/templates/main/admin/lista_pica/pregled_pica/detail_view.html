@@ -1,0 +1,26 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ pice.pice_naziv }} - Detalji</title>
+</head>
+<body>
+
+    <h1>Detalji Pića: {{ pice.pice_naziv }}</h1>
+
+    <ul>
+        <!--<li><strong>Šifra:</strong> {{ pice.pice_sifra }}</li> -->
+        <li><strong>Opis:</strong> {{ pice.pice_opis }}</li>
+        <li><strong>Količina:</strong> {{ pice.pice_kolicina_u_ml }} ml</li>
+        <li><strong>Alkohol:</strong> {% if pice.pice_sadrzi_alkohol %}Da{% else %}Ne{% endif %}</li>
+        <li><strong>Vegansko:</strong> {% if pice.pice_vegansko %}Da{% else %}Ne{% endif %}</li>
+        <li><strong>Cijena:</strong> {{ pice.pice_poj_cijena }} HRK</li>
+    </ul>
+
+    <a href="{% url 'main:drink_list_view' %}">
+        <button>Povratak na listu pića</button>
+    </a>
+
+</body>
+</html>

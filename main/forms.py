@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User, Group
 
+from .models import *
+
 
 class UserCreationWithGroupForm(forms.ModelForm):
     password1 = forms.CharField(label="Password", widget=forms.PasswordInput)
@@ -30,3 +32,14 @@ class UserCreationWithGroupForm(forms.ModelForm):
         group = self.cleaned_data.get("group")
         group.user_set.add(user)
         return user
+
+
+# forma za unos novog pica:
+
+class PiceForm(forms.ModelForm):
+    class Meta:
+        model = Pice
+        fields = ['pice_naziv', 'pice_opis', 'pice_kolicina_u_ml', 'pice_sadrzi_alkohol', 'pice_vegansko', 'pice_poj_cijena']
+
+    pice_naziv = forms.CharField(required=True)
+    pice_kolicina_u_ml = forms.IntegerField(required=True)

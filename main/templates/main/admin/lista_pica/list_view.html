@@ -1,0 +1,119 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista Pića</title>
+
+    <script>
+        // Osiguravanje vracanje defaultne vrijednosti za input formu
+        function setDefaultValue(input) {
+            if (input.value === '') {
+                input.value = input.defaultValue; 
+            }
+        }
+    </script>
+
+
+
+</head>
+<body>
+
+    <h1>Lista Pića</h1>
+
+    <a href="{% url 'main:dodaj_pice' %}">
+        <button>Dodaj piće</button>
+    </a>
+
+    <br>
+    <br>
+
+
+ 
+    <a href="{% url 'main:homepage' %}">
+        <button>Povratak na početnu stranicu</button>
+    </a>
+ 
+ 
+
+    <br>
+    <br>
+
+    <form method="get">
+        <!-- Filtriranje prema alkoholu -->
+        <label for="alkohol">Alkohol:</label>
+        <select name="alkohol" id="alkohol">
+            <option value="">Sve</option>
+            <option value="true" {% if request.GET.alkohol == 'true' %}selected{% endif %}>Sadrži alkohol</option>
+            <option value="false" {% if request.GET.alkohol == 'false' %}selected{% endif %}>Ne sadrži alkohol</option>
+        </select>
+
+        <!-- Filtriranje prema veganskom statusu -->
+        <label for="vegansko">Vegansko:</label>
+        <select name="vegansko" id="vegansko">
+            <option value="">Sve</option>
+            <option value="true" {% if request.GET.vegansko == 'true' %}selected{% endif %}>Vegansko</option>
+            <option value="false" {% if request.GET.vegansko == 'false' %}selected{% endif %}>Nije vegansko</option>
+        </select>
+
+        <!-- Filtriranje prema minimalnoj količini -->
+        <label for="min_kolicina">Minimalna količina (ml):</label>
+        <input type="number" name="min_kolicina" value="{{ request.GET.min_kolicina }}"  min="0" id="min_kolicina"
+         required  onblur="setDefaultValue(this)" defaultValue="100">
+
+        <button type="submit">Filtriraj</button>
+    </form>
+
+
+    <br>
+    <br>
+
+
+    lista pića:
+
+    <ul>
+        {% for pice in pica %}
+          
+        <li>
+
+            <a href="{% url 'main:pice_detail' pk=pice.pk %}">
+            <button>
+                <strong>{{ pice.pice_naziv }}</strong><br>
+            </button>
+        </a>
+        </li>
+
+               <!-- Šifra: {{ pice.pice_sifra }}<br>
+                Opis: {{ pice.pice_opis }}<br>
+                Količina: {{ pice.pice_kolicina_u_ml }} ml<br>
+                Alkohol: {% if pice.pice_sadrzi_alkohol %}Da{% else %}Ne{% endif %}<br>
+                Vegansko: {% if pice.pice_vegansko %}Da{% else %}Ne{% endif %}<br>
+                Cijena: {{ pice.pice_poj_cijena }} HRK -->
+           
+            
+        {% empty %}
+            <li>Nema pića za prikaz prema odabranim filtrima.</li>
+        {% endfor %}
+    </ul>
+
+    {% if is_paginated %}
+        <div>
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">&laquo; prvi</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">prethodni</a>
+                {% endif %}
+                <span class="current">
+                    Strana {{ page_obj.number }} od {{ page_obj.paginator.num_pages }}.
+                </span>
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">sljedeći</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">posljednji &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    {% endif %}
+
+   
+</body>
+</html>
