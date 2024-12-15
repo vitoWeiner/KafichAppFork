@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalji narudžbe</title>
+</head>
+<body>
+    <h1>Detalji narudžbe: {{ narudzba.narudzba_sifra }}</h1>
+
+    <p>Datum kreiranja: {{ narudzba.narudzba_datum_kreiranja }}</p>
+    <p>Plaćena: {{ narudzba.narudzba_placena|yesno:"Da,Ne" }}</p>
+    <p>Ukupan broj stavki: {{ narudzba.narudzba_kolicina_stavki }}</p>
+
+    <h2>Stavke narudžbe:</h2>
+    {% if narudzba.stavke.all %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Pice</th>
+                    <th>Količina</th>
+                    <th>Ukupna cijena</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stavka in narudzba.stavke.all %}
+                    <tr>
+                        <td>{{ stavka.stavka_pice.pice_naziv }}</td>
+                        <td>{{ stavka.stavka_kolicina_pica }}</td>
+                        <td>{{ stavka.stavka_ukupna_cijena }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Nema stavki za ovu narudžbu.</p>
+    {% endif %}
+</body>
+</html>

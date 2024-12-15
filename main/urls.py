@@ -21,5 +21,7 @@ urlpatterns += [
     path('lista-pica', views.PiceListView.as_view(), name='drink_list_view'),
     path('dodaj-pice/', views.dodaj_pice, name='dodaj_pice'),
     path('pice/<int:pk>/', views.PiceDetailView.as_view(), name='pice_detail'),
+    path('lista-narudzbi/', views.NarudzbaListView.as_view(), name='lista_narudzbi'),
+    
 ]
 

@@ -1,0 +1,78 @@
+
+<h1>Popis narudžbi</h1>
+
+<button>
+    <a href="#" class="btn btn-primary">+ Dodaj novu narudžbu</a>
+</button>
+    
+<br>
+<br>
+
+<a href="{% url 'main:homepage'%}" class="btn btn-primary">
+    
+    <button>
+        Povratak na izbornik
+        
+    </button>
+    
+</a>
+
+<br>
+<br>
+
+
+<form method="get">
+    <label for="placena">Filtriraj po statusu plaćanja:</label>
+    <select name="placena" id="placena">
+        <option value="">Svi</option>
+        <option value="true">Plaćene</option>
+        <option value="false">Neplaćene</option>
+    </select>
+    <button type="submit">Primijeni</button>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Šifra</th>
+            <th>Broj stavki</th>
+            <th>Konobar</th>
+            <th>Datum kreiranja</th>
+            <th>Plaćena</th>
+            <th>Detalji</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for narudzba in narudzbe %}
+        <tr>
+            <td>{{ narudzba.narudzba_sifra }}</td>
+            <td>{{ narudzba.narudzba_kolicina_stavki }}</td>
+            <td>{{ narudzba.narudzba_konobar.username }}</td>
+            <td>{{ narudzba.narudzba_datum_kreiranja|date:"d.m.Y H:i" }}</td>
+            <td>{{ narudzba.narudzba_placena|yesno:"Da,Ne" }}</td>
+            <td><a href="{% url 'narudzba-detail' narudzba.narudzba_sifra %}">Pogledaj</a></td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6">Nema narudžbi za prikaz.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="pagination">
+    {% if is_paginated %}
+        {% if page_obj.has_previous %}
+            <a href="?page=1">Prva</a>
+            <a href="?page={{ page_obj.previous_page_number }}">Prethodna</a>
+        {% endif %}
+
+        <span>Stranica {{ page_obj.number }} od {{ page_obj.paginator.num_pages }}</span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Sljedeća</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">Zadnja</a>
+        {% endif %}
+    {% endif %}
+</div>
+

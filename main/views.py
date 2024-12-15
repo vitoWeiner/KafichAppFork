@@ -7,6 +7,8 @@ from django.contrib.auth.models import User, Group  # Dodano
 from .forms import *
 from django.views.generic import ListView, DetailView
 from .models import *
+from django.db.models import Q
+from django_filters import *
 
 ## Create your views here.
 @login_required
@@ -202,3 +204,20 @@ class PiceDetailView(DetailView):
     model = Pice
     template_name = 'main/admin/lista_pica/pregled_pica/detail_view.html'  
     context_object_name = 'pice'  
+
+
+
+
+class NarudzbaListView(ListView):
+    model = Narudzba
+    template_name = 'main/user/lista_narudzbi/list_view.html'
+    context_object_name = 'narudzbe'
+    paginate_by = 10  # Paginate results
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        
+        placena_filter = self.request.GET.get('placena')
+        if placena_filter is not None:
+            queryset = queryset.filter(narudzba_placena=(placena_filter.lower() == 'true'))
+        return queryset
