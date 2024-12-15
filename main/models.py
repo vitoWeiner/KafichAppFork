@@ -1,18 +1,17 @@
 from django.db import models
 from django.utils import timezone
 from django.core.validators import MinValueValidator
-
+import uuid
 
 # Create your models here.
 class Pice(models.Model):
-    pice_sifra = models.CharField(max_length=10)
+    pice_sifra = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)    #models.CharField(max_length=10, unique=True, blank=True)
     pice_naziv = models.CharField(max_length=30)
     pice_opis = models.CharField(max_length=100)
     pice_kolicina_u_ml = models.FloatField()
     pice_sadrzi_alkohol = models.BooleanField(default=False)
     pice_vegansko = models.BooleanField(default=False)
     pice_poj_cijena = models.DecimalField(max_digits=10, decimal_places=2)
-
 
     def __str__(self):
         return self.pice_sifra
@@ -36,7 +35,7 @@ class Konobar(models.Model):
 
 
 class Narudzba(models.Model):
-    narudzba_sifra = models.CharField(max_length=10)
+    narudzba_sifra =  models.UUIDField(default=uuid.uuid4, editable=False, unique=True)                 # models.CharField(max_length=10)
     narudzba_kolicina_stavki = models.PositiveIntegerField(
         validators=[MinValueValidator(1)]  
     )

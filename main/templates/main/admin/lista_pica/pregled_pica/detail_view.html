@@ -10,7 +10,7 @@
     <h1>Detalji Pića: {{ pice.pice_naziv }}</h1>
 
     <ul>
-        <!--<li><strong>Šifra:</strong> {{ pice.pice_sifra }}</li> -->
+        <li><strong>Šifra:</strong> {{ pice.pice_sifra }}</li> 
         <li><strong>Opis:</strong> {{ pice.pice_opis }}</li>
         <li><strong>Količina:</strong> {{ pice.pice_kolicina_u_ml }} ml</li>
         <li><strong>Alkohol:</strong> {% if pice.pice_sadrzi_alkohol %}Da{% else %}Ne{% endif %}</li>
