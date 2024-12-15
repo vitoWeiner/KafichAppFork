@@ -8,10 +8,15 @@
     <h1>Dodaj novog korisnika</h1>
     <a href="{% url 'main:manage_users' %}">Nazad na upravljanje korisnicima</a>
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}  
-        <button type="submit">Spremi korisnika</button>
-    </form>
+    <br>
+    <br>
+    <!-- Gumbi za odabir tipa korisnika -->
+    <a href="{% url 'main:add_admin' %}">
+        <button type="button">Dodaj Admina</button>
+    </a>
+    <br>
+    <a href="{% url 'main:add_konobar' %}">
+        <button type="button">Dodaj Konobara</button>
+    </a>
 </body>
 </html>

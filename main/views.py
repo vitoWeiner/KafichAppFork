@@ -92,18 +92,37 @@ def delete_user(request, user_id):
 
 @login_required
 def add_user(request):
-    if not request.user.groups.filter(name='Korisnik').exists():  
-        if request.method == 'POST':
-            form = UserCreationWithGroupForm(request.POST)
-            if form.is_valid():
-                form.save()
-                return redirect('main:manage_users') 
-        else:
-            form = UserCreationWithGroupForm()  
+    # Provjera da li korisnik pripada grupi "Korisnik"
+    #if not request.user.groups.filter(name='Korisnik').exists():
+    return render(request, 'main/admin/upravljanje_korisnicima/dodavanje_novog_korisnika/add_user.html')
+    #else:
+     #   return redirect('main:homepage')
 
-        return render(request, 'main/admin/upravljanje_korisnicima/dodavanje_novog_korisnika/add_user.html', {'form': form}) 
+
+
+def add_admin(request):
+    if request.method == 'POST':
+        form = AdminCreationForm(request.POST)
+        if form.is_valid():
+            form.save()  # Spremi novog admina
+            return redirect('main:manage_users')  # Preusmjeri na stranicu za upravljanje korisnicima
     else:
-        return redirect('main:homepage') 
+        form = AdminCreationForm()
+
+    return render(request, 'main/admin/upravljanje_korisnicima/dodavanje_novog_korisnika/dodavanje_novog_administratora/add_admin.html', {'form': form})
+
+
+
+def add_konobar(request):
+    if request.method == 'POST':
+        form = KonobarCreationForm(request.POST)
+        if form.is_valid():
+            form.save()  # Spremi novog konobara
+            return redirect('main:manage_users')  # Preusmjeri na stranicu za upravljanje korisnicima
+    else:
+        form = KonobarCreationForm()
+
+    return render(request, 'main/admin/upravljanje_korisnicima/dodavanje_novog_korisnika/dodavanje_novog_Konobara/add_konobar.html', {'form': form})
 
 
 @login_required

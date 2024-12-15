@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodaj Konobara</title>
+</head>
+<body>
+    <h1>Dodaj Konobara</h1>
+    <a href="{% url 'main:add_user' %}">Nazad na upravljanje korisnicima</a>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}  <!-- Form rendering -->
+        <button type="submit">Spremi Konobara</button>
+    </form>
+</body>
+</html>
