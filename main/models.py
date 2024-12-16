@@ -15,7 +15,7 @@ class Pice(models.Model):
     pice_poj_cijena = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
-        return self.pice_sifra
+        return self.pice_naziv
 
 
 
@@ -37,7 +37,8 @@ class Konobar(models.Model):
 class Narudzba(models.Model):
     narudzba_sifra =  models.UUIDField(default=uuid.uuid4, editable=False, unique=True)                 # models.CharField(max_length=10)
     narudzba_kolicina_stavki = models.PositiveIntegerField(
-        validators=[MinValueValidator(1)]  
+        validators=[MinValueValidator(0)],
+        blank = True  
     )
     narudzba_konobar = models.ForeignKey(
         User, 
@@ -46,13 +47,24 @@ class Narudzba(models.Model):
     )
     narudzba_datum_kreiranja = models.DateTimeField(default=timezone.now)
     narudzba_placena = models.BooleanField(default=False)  
+    narudzba_ukupna_cijena = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
+    def update_ukupna_cijena(self):
+        total_price = sum(stavka.stavka_ukupna_cijena for stavka in self.stavke.all())
+        self.narudzba_ukupna_cijena = total_price
+        self.save()
 
     def __str__(self):
         return self.narudzba_sifra
 
 
 class StavkaNarudzbe(models.Model):
+
+
+    stavka_sifra = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+
+
     stavka_narudzba = models.ForeignKey(
         Narudzba, 
         on_delete=models.CASCADE, 

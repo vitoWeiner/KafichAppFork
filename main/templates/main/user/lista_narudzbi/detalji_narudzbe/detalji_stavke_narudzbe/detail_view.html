@@ -1,0 +1,11 @@
+<h1>Detalji stavke narudžbe</h1>
+  
+  <h2>{{ stavka.stavka_pice.pice_naziv }} (x{{ stavka.stavka_kolicina_pica }})</h2>
+  
+  <p><strong>Broj stavke:</strong> {{ stavka.pk }}</p>
+  <p><strong>Šifra narudžbe:</strong> {{ stavka.stavka_narudzba.narudzba_sifra }}</p>
+  <p><strong>Količina:</strong> {{ stavka.stavka_kolicina_pica }}</p>
+  <p><strong>Cijena po komadu:</strong> {{ stavka.stavka_pice.pice_poj_cijena }} HRK</p>
+  <p><strong>Ukupna cijena:</strong> {{ stavka.stavka_ukupna_cijena }} HRK</p>
+  
+  <a href="{% url 'main:detalji_narudzbe' stavka.stavka_narudzba.narudzba_sifra %}">Povratak na detalje narudžbe</a>

@@ -1,38 +1,50 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Detalji narudžbe</title>
-</head>
-<body>
-    <h1>Detalji narudžbe: {{ narudzba.narudzba_sifra }}</h1>
+<h1>Detalji narudžbe {{ narudzba.narudzba_sifra }}</h1>
+<p>Status plaćanja: {% if narudzba.narudzba_placena %} Plaćena {% else %} Neplaćena {% endif %}</p>
+<p>Datum kreiranja: {{ narudzba.narudzba_datum_kreiranja|date:"d.m.Y H:i" }}</p>
+<p>Broj stavki: {{ narudzba.narudzba_kolicina_stavki }}</p>
 
-    <p>Datum kreiranja: {{ narudzba.narudzba_datum_kreiranja }}</p>
-    <p>Plaćena: {{ narudzba.narudzba_placena|yesno:"Da,Ne" }}</p>
-    <p>Ukupan broj stavki: {{ narudzba.narudzba_kolicina_stavki }}</p>
+<h2>Stavke narudžbe</h2>
 
-    <h2>Stavke narudžbe:</h2>
-    {% if narudzba.stavke.all %}
-        <table>
-            <thead>
-                <tr>
-                    <th>Pice</th>
-                    <th>Količina</th>
-                    <th>Ukupna cijena</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for stavka in narudzba.stavke.all %}
-                    <tr>
-                        <td>{{ stavka.stavka_pice.pice_naziv }}</td>
-                        <td>{{ stavka.stavka_kolicina_pica }}</td>
-                        <td>{{ stavka.stavka_ukupna_cijena }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>Nema stavki za ovu narudžbu.</p>
-    {% endif %}
-</body>
-</html>
+<table>
+    <thead>
+        <tr>
+            <th>Pice</th>
+            <th>Količina</th>
+            <th>Cijena</th>
+            <th>Detalji</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for stavka in stavke %}
+        <tr>
+            <td>{{ stavka.stavka_pice.pice_naziv }}</td>
+            <td>{{ stavka.stavka_kolicina_pica }}</td>
+            <td>{{ stavka.stavka_ukupna_cijena }}</td>
+            <td><a href="{% url 'main:stavka_narudzbe' stavka.stavka_sifra %}">Detalji stavke</a></td>
+            
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">Nema stavki u ovoj narudžbi.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Dodavanje nove stavke -->
+<h3>Dodaj novu stavku</h3>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" name="dodaj_stavku" class="btn btn-success">Dodaj stavku</button>
+</form>
+
+<!-- Plaćanje narudžbe -->
+<h3>Plaćanje narudžbe</h3>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" name="plati" class="btn btn-warning">Plati narudžbu</button>
+</form>
+
+<!-- povratak na popis narudžbi -->
+<a href="{% url 'main:lista_narudzbi' %}" class="btn btn-secondary">Povratak na popis narudžbi</a>

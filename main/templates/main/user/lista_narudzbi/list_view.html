@@ -2,7 +2,7 @@
 <h1>Popis narudžbi</h1>
 
 <button>
-    <a href="#" class="btn btn-primary">+ Dodaj novu narudžbu</a>
+    <a href="{% url 'main:kreiraj_narudzbu'%}" class="btn btn-primary">+ Dodaj novu narudžbu</a>
 </button>
     
 <br>
@@ -21,6 +21,8 @@
 <br>
 
 
+
+ 
 <form method="get">
     <label for="placena">Filtriraj po statusu plaćanja:</label>
     <select name="placena" id="placena">
@@ -45,18 +47,19 @@
     <tbody>
         {% for narudzba in narudzbe %}
         <tr>
-            <td>{{ narudzba.narudzba_sifra }}</td>
+            <td><a href="{% url 'main:detalji_narudzbe' narudzba.narudzba_sifra %}">{{ narudzba.narudzba_sifra }}</a></td>
             <td>{{ narudzba.narudzba_kolicina_stavki }}</td>
             <td>{{ narudzba.narudzba_konobar.username }}</td>
             <td>{{ narudzba.narudzba_datum_kreiranja|date:"d.m.Y H:i" }}</td>
             <td>{{ narudzba.narudzba_placena|yesno:"Da,Ne" }}</td>
-            <td><a href="{% url 'narudzba-detail' narudzba.narudzba_sifra %}">Pogledaj</a></td>
+            <td><a href="{% url 'main:detalji_narudzbe' narudzba.narudzba_sifra %}" class="btn btn-info">Detalji</a></td>
         </tr>
         {% empty %}
         <tr>
             <td colspan="6">Nema narudžbi za prikaz.</td>
         </tr>
         {% endfor %}
+
     </tbody>
 </table>
 

@@ -22,6 +22,9 @@ urlpatterns += [
     path('dodaj-pice/', views.dodaj_pice, name='dodaj_pice'),
     path('pice/<int:pk>/', views.PiceDetailView.as_view(), name='pice_detail'),
     path('lista-narudzbi/', views.NarudzbaListView.as_view(), name='lista_narudzbi'),
+    path('kreiraj-narudzbu/', views.kreiraj_narudzbu, name='kreiraj_narudzbu'),
+    path('detalji_narudzbe/<uuid:narudzba_sifra>/', views.NarudzbaDetailView.as_view(), name='detalji_narudzbe'),
+    path('stavka_narudzbe/<uuid:pk>/', views.StavkaNarudzbeDetailView.as_view(), name='stavka_narudzbe'),
     
 ]
 

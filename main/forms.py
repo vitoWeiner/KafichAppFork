@@ -58,7 +58,7 @@ class AdminCreationForm(forms.ModelForm):
     
     class Meta:
         model = User
-        fields = ['username', 'email']  # Polja za unos u formi
+        fields = ['username', 'email']  
 
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")
@@ -70,22 +70,18 @@ class AdminCreationForm(forms.ModelForm):
 
     def save(self, commit=True):
         user = super(AdminCreationForm, self).save(commit=False)
-        user.set_password(self.cleaned_data["password1"])  # Postavljanje lozinke
+        user.set_password(self.cleaned_data["password1"])  
         
         if commit:
             user.save()
 
-        # Dodavanje korisnika u grupu 'Admin'
-        group = Group.objects.get(name='Administrator')  # Odabir grupe 'Admin'
-        group.user_set.add(user)  # Dodavanje korisnika u grupu
+       
+        group = Group.objects.get(name='Administrator')  
+        group.user_set.add(user)  
 
         return user
 
 
-
-            
-
-# forma za unos novog pica:
 
 class PiceForm(forms.ModelForm):
     class Meta:
@@ -97,6 +93,22 @@ class PiceForm(forms.ModelForm):
 
 
 
+class NarudzbaForm(forms.ModelForm):
+    class Meta:
+        model = Narudzba
+        fields = ['narudzba_kolicina_stavki', 'narudzba_placena']
+        widgets = {
+            'narudzba_kolicina_stavki': forms.HiddenInput()  
+        }
+
+
+
+class StavkaNarudzbeForm(forms.ModelForm):
+    class Meta:
+        model = StavkaNarudzbe
+        fields = ['stavka_pice', 'stavka_kolicina_pica']
+
+
 
 
 """
@@ -104,7 +116,7 @@ class UserCreationWithGroupForm(forms.ModelForm):
     password1 = forms.CharField(label="Password", widget=forms.PasswordInput)
     password2 = forms.CharField(label="Confirm Password", widget=forms.PasswordInput)
     
-    group = forms.ModelChoiceField(queryset=Group.objects.all(), required=True, label="Role") # dropdown za izbor grupe
+    group = forms.ModelChoiceField(queryset=Group.objects.all(), required=True, label="Role")
 
     konobar_ime = forms.CharField(label="First Name", required=True)
     konobar_prezime = forms.CharField(label="Last Name", required=True)
@@ -113,7 +125,7 @@ class UserCreationWithGroupForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['username', 'email']  # Polja za unos u formi
+        fields = ['username', 'email']  
 
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")
@@ -125,7 +137,7 @@ class UserCreationWithGroupForm(forms.ModelForm):
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.set_password(self.cleaned_data["password1"])  # Postavljanje lozinke
+        user.set_password(self.cleaned_data["password1"])
         if commit:
             user.save()
         

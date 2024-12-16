@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
@@ -9,6 +9,9 @@ from django.views.generic import ListView, DetailView
 from .models import *
 from django.db.models import Q
 from django_filters import *
+
+from django.forms import inlineformset_factory
+
 
 ## Create your views here.
 @login_required
@@ -94,7 +97,7 @@ def delete_user(request, user_id):
 
 @login_required
 def add_user(request):
-    # Provjera da li korisnik pripada grupi "Korisnik"
+    
     #if not request.user.groups.filter(name='Korisnik').exists():
     return render(request, 'main/admin/upravljanje_korisnicima/dodavanje_novog_korisnika/add_user.html')
     #else:
@@ -106,8 +109,8 @@ def add_admin(request):
     if request.method == 'POST':
         form = AdminCreationForm(request.POST)
         if form.is_valid():
-            form.save()  # Spremi novog admina
-            return redirect('main:manage_users')  # Preusmjeri na stranicu za upravljanje korisnicima
+            form.save()  
+            return redirect('main:manage_users')
     else:
         form = AdminCreationForm()
 
@@ -119,8 +122,8 @@ def add_konobar(request):
     if request.method == 'POST':
         form = KonobarCreationForm(request.POST)
         if form.is_valid():
-            form.save()  # Spremi novog konobara
-            return redirect('main:manage_users')  # Preusmjeri na stranicu za upravljanje korisnicima
+            form.save() 
+            return redirect('main:manage_users')  
     else:
         form = KonobarCreationForm()
 
@@ -212,12 +215,152 @@ class NarudzbaListView(ListView):
     model = Narudzba
     template_name = 'main/user/lista_narudzbi/list_view.html'
     context_object_name = 'narudzbe'
-    paginate_by = 10  # Paginate results
+    paginate_by = 10 
 
     def get_queryset(self):
         queryset = super().get_queryset()
+
+        user = self.request.user
+
+        if not user.is_authenticated:
+            return queryset.none()
+
+        queryset = queryset.filter(narudzba_konobar=user)
         
         placena_filter = self.request.GET.get('placena')
+
         if placena_filter is not None:
             queryset = queryset.filter(narudzba_placena=(placena_filter.lower() == 'true'))
+
         return queryset
+
+
+
+@login_required
+def kreiraj_narudzbu(request):
+   
+    nova_narudzba = Narudzba(
+        narudzba_kolicina_stavki=0,
+        narudzba_konobar=request.user,  
+        narudzba_placena=False,
+        narudzba_ukupna_cijena=0
+    )
+    nova_narudzba.save()
+
+  
+    return redirect('main:lista_narudzbi')
+
+
+class NarudzbaDetailView(DetailView):
+    model = Narudzba
+    template_name = 'main/user/lista_narudzbi/detalji_narudzbe/narudzba_details.html'
+    context_object_name = 'narudzba'
+    
+   
+    slug_field = 'narudzba_sifra'
+    slug_url_kwarg = 'narudzba_sifra'  
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        narudzba = self.get_object()  
+        context['stavke'] = StavkaNarudzbe.objects.filter(stavka_narudzba=narudzba)
+        context['form'] = StavkaNarudzbeForm()  
+        return context
+
+    def post(self, request, *args, **kwargs):
+        
+        narudzba = self.get_object()
+
+       
+        if 'plati' in request.POST:
+            narudzba.narudzba_placena = True
+            narudzba.save()
+            
+
+            return redirect('main:detalji_narudzbe', narudzba_sifra=narudzba.narudzba_sifra)
+
+      
+        elif 'dodaj_stavku' in request.POST:
+            form = StavkaNarudzbeForm(request.POST)
+            if form.is_valid():
+              
+                nova_stavka = form.save(commit=False)
+                nova_stavka.stavka_narudzba = narudzba
+                nova_stavka.save()
+            
+           
+            return redirect('main:detalji_narudzbe', narudzba_sifra=narudzba.narudzba_sifra)
+
+        return super().post(request, *args, **kwargs)
+
+
+class StavkaNarudzbeDetailView(DetailView):
+    model = StavkaNarudzbe
+    template_name = 'main/user/lista_narudzbi/detalji_narudzbe/detalji_stavke_narudzbe/detail_view.html'
+    context_object_name = 'stavka'
+
+
+
+"""
+def detalji_narudzbe(request, narudzba_sifra):
+    # Dohvati narudžbu prema šifri
+    narudzba = get_object_or_404(Narudzba, narudzba_sifra=narudzba_sifra)
+    
+    # Dohvati sve stavke za ovu narudžbu
+    stavke = StavkaNarudzbe.objects.filter(stavka_narudzba=narudzba)
+    
+    if request.method == 'POST':
+        # Ako je kliknuto na gumb "Plati", ažuriraj narudžbu
+        if 'plati' in request.POST:
+            narudzba.narudzba_placena = True
+            narudzba.save()
+            return redirect('main:detalji_narudzbe', narudzba_sifra=narudzba.narudzba_sifra)  
+
+    return render(request, 'main/user/lista_narudzbi/detalji_narudzbe/narudzba_details.html', {
+        'narudzba': narudzba,
+        'stavke': stavke
+    })
+
+
+
+def kreiraj_narudzbu(request):
+    # Formset za dodavanje više stavki odjednom
+    StavkaFormSet = inlineformset_factory(
+        Narudzba,
+        StavkaNarudzbe,
+        form=StavkaNarudzbeForm,
+        extra=1,
+        can_delete=True
+    )
+
+    if request.method == 'POST':
+        narudzba_form = NarudzbaForm(request.POST)
+        if narudzba_form.is_valid():
+            narudzba = narudzba_form.save(commit=False)
+            narudzba.narudzba_konobar = request.user
+            narudzba.save()
+
+            formset = StavkaFormSet(request.POST, instance=narudzba)
+            if formset.is_valid():
+                formset.save()
+
+                # Ažuriraj broj stavki
+                narudzba.narudzba_kolicina_stavki = narudzba.stavke.count()
+                narudzba.save()
+
+                return redirect('lista_narudzbi')
+            else:
+                # Ako formset nije validan, obriši kreiranu narudžbu
+                narudzba.delete()
+        else:
+            # Ako forma za narudžbu nije validna, samo prosledi prazan formset
+            formset = StavkaFormSet()
+    else:
+        narudzba_form = NarudzbaForm()
+        formset = StavkaFormSet()
+
+    return render(request, 'main/user/lista_narudzbi/kreiranje_narudzbe/kreiranje_narudzbe.html', {
+        'narudzba_form': narudzba_form,
+        'formset': formset,
+    })
+"""
