@@ -26,6 +26,10 @@ urlpatterns += [
     path('detalji_narudzbe/<uuid:narudzba_sifra>/', views.NarudzbaDetailView.as_view(), name='detalji_narudzbe'),
     path('stavka_narudzbe/<uuid:pk>/', views.StavkaNarudzbeDetailView.as_view(), name='stavka_narudzbe'),
     path('konobar/detalji/', views.KonobarDetailView.as_view(), name='konobar_detalji'),
+
+    path('konobari/',views.KonobarListViewFromAdmin.as_view(), name='konobar_list_view'),
+    path('konobar/<int:user_pk>/', views.KonobarDetailViewFromAdmin.as_view(), name='konobar_detail'),
+    path('narudzbaFromAdmin/<uuid:narudzba_sifra>/', views.NarudzbaDetailViewFromAdmin.as_view(), name='narudzba_detail'),
     
 ]
 

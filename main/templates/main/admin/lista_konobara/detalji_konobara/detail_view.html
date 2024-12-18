@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalji konobara</title>
+</head>
+<body>
+    <h1>{{ konobar.konobar_ime }} {{ konobar.konobar_prezime }}</h1>
+    <p>Datum zaposlenja: {{ konobar.konobar_datum_zaposlenja }}</p>
+    <p>Zarada: {{ konobar.konobar_zarada }} HRK</p>
+    <p>Telefon: {{ konobar.konobar_telefon }}</p>
+
+    <h2>Narudžbe</h2>
+    <ul>
+        {% for narudzba in narudzbe %}
+            <li>
+                <a href="{% url 'main:narudzba_detail' narudzba.narudzba_sifra %}">
+                    {{ narudzba.narudzba_sifra }} - {{ narudzba.narudzba_ukupna_cijena }} EURA
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

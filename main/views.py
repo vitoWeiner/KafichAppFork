@@ -322,6 +322,42 @@ class KonobarDetailView(LoginRequiredMixin, DetailView):
 
 
 
+class KonobarListViewFromAdmin(ListView):
+    model = Konobar
+    template_name = 'main/admin/lista_konobara/konobar_list_view.html' 
+    context_object_name = 'konobari'
+
+
+class KonobarDetailViewFromAdmin(DetailView):
+    model = Konobar
+    template_name = 'main/admin/lista_konobara/detalji_konobara/detail_view.html'  
+    context_object_name = 'konobar'
+
+    def get_object(self):
+    
+        return Konobar.objects.get(user__pk=self.kwargs['user_pk'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        konobar = self.get_object()
+        context['narudzbe'] = konobar.user.narudzbe.all()
+        return context
+
+class NarudzbaDetailViewFromAdmin(DetailView):
+    model = Narudzba
+    template_name = 'main/admin/lista_konobara/detalji_konobara/detalji_narudzbe/detail_view.html'
+    context_object_name = 'narudzba'
+
+    def get_object(self):
+       
+        return Narudzba.objects.get(narudzba_sifra=self.kwargs['narudzba_sifra'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        narudzba = self.get_object()
+        context['stavke'] = narudzba.stavke.all()  
+        return context
+
 """
 def detalji_narudzbe(request, narudzba_sifra):
     # Dohvati narudžbu prema šifri

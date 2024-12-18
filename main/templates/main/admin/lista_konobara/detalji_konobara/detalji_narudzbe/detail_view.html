@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalji narudžbe</title>
+</head>
+<body>
+    <h1>Detalji narudžbe {{ narudzba.narudzba_sifra }}</h1>
+
+    <p><strong>Datum kreiranja:</strong> {{ narudzba.narudzba_datum_kreiranja }}</p>
+    <p><strong>Ukupna cijena:</strong> {{ narudzba.narudzba_ukupna_cijena }} EURA</p>
+    <p><strong>Statut narudžbe:</strong> {% if narudzba.narudzba_placena %} Plaćena {% else %} Nije plaćena {% endif %}</p>
+
+    <h2>Stavke narudžbe</h2>
+    <ul>
+        {% for stavka in stavke %}
+            <li>
+                {{ stavka.stavka_pice.pice_naziv }} (x{{ stavka.stavka_kolicina_pica }}) - {{ stavka.stavka_ukupna_cijena }} EURA
+            </li>
+        {% endfor %}
+    </ul>
+
+    
+</body>
+</html>

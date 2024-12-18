@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista konobara</title>
+</head>
+<body>
+    <h1>Lista konobara</h1>
+    <ul>
+        {% for konobar in konobari %}
+            <li>
+                <a href="{% url 'main:konobar_detail' user_pk=konobar.user.pk %}">
+                    {{ konobar.konobar_ime }} {{ konobar.konobar_prezime }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

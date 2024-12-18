@@ -15,7 +15,7 @@
         <li><strong>Količina:</strong> {{ pice.pice_kolicina_u_ml }} ml</li>
         <li><strong>Alkohol:</strong> {% if pice.pice_sadrzi_alkohol %}Da{% else %}Ne{% endif %}</li>
         <li><strong>Vegansko:</strong> {% if pice.pice_vegansko %}Da{% else %}Ne{% endif %}</li>
-        <li><strong>Cijena:</strong> {{ pice.pice_poj_cijena }} HRK</li>
+        <li><strong>Cijena:</strong> {{ pice.pice_poj_cijena }} EURA</li>
     </ul>
 
     <a href="{% url 'main:drink_list_view' %}">
