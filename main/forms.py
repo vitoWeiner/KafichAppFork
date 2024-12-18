@@ -119,7 +119,10 @@ class PiceForm(forms.ModelForm):
         fields = ['pice_naziv', 'pice_opis', 'pice_kolicina_u_ml', 'pice_sadrzi_alkohol', 'pice_vegansko', 'pice_poj_cijena']
 
     pice_naziv = forms.CharField(required=True)
-    pice_kolicina_u_ml = forms.IntegerField(required=True)
+    pice_kolicina_u_ml = forms.IntegerField(min_value=1, required=True, label="Količina (ml)")
+    pice_poj_cijena = forms.DecimalField(min_value=0.01, max_digits=10, decimal_places=2, required=True, label="Cijena (€)")
+
+
 
 
 

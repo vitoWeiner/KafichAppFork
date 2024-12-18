@@ -170,9 +170,14 @@ class PiceListView(ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
 
+        search = self.request.GET.get('search')  
         alkohol = self.request.GET.get('alkohol')  
         vegansko = self.request.GET.get('vegansko')  
         min_kolicina = self.request.GET.get('min_kolicina')  
+
+
+        if search:
+            queryset = queryset.filter(pice_naziv__icontains=search)
 
         if alkohol:
             if alkohol == 'true':
@@ -216,6 +221,7 @@ class PiceDetailView(DetailView):
 
 
 
+# slijedeci list view je view iz sucelja konobara, konobar pristupa svojim narudzbama
 
 class NarudzbaListView(ListView):
     model = Narudzba
@@ -235,7 +241,7 @@ class NarudzbaListView(ListView):
         
         placena_filter = self.request.GET.get('placena')
 
-        if placena_filter is not None:
+        if placena_filter is not None and placena_filter != "":
             queryset = queryset.filter(narudzba_placena=(placena_filter.lower() == 'true'))
 
         return queryset
@@ -280,8 +286,15 @@ class NarudzbaDetailView(DetailView):
        
         if 'plati' in request.POST:
             narudzba.narudzba_placena = True
+
+            for stavka in narudzba.stavke.all():
+                narudzba.narudzba_ukupna_cijena += stavka.stavka_ukupna_cijena
+
+            konobar = narudzba.narudzba_konobar.konobar
+            konobar.konobar_zarada += narudzba.narudzba_ukupna_cijena
+
             narudzba.save()
-            
+            konobar.save()
 
             return redirect('main:detalji_narudzbe', narudzba_sifra=narudzba.narudzba_sifra)
 
@@ -326,6 +339,21 @@ class KonobarListViewFromAdmin(ListView):
     model = Konobar
     template_name = 'main/admin/lista_konobara/konobar_list_view.html' 
     context_object_name = 'konobari'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        # Uzmi parametar 'search' iz GET zahteva
+        search_query = self.request.GET.get('search', '')
+
+        if search_query:
+            # Filtriraj queryset na osnovu 'search_query'
+            queryset = queryset.filter(
+                Q(konobar_ime__icontains=search_query) |  # Pretraga po imenu konobara
+                Q(user__username__icontains=search_query)  # Pretraga po username-u korisnika
+            )
+        
+        return queryset
 
 
 class KonobarDetailViewFromAdmin(DetailView):

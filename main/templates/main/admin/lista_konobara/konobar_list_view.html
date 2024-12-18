@@ -6,6 +6,20 @@
 </head>
 <body>
     <h1>Lista konobara</h1>
+
+    <a href="{% url 'main:homepage' %}">
+        povratak
+    </a>
+
+
+       <!-- Forma za pretragu -->
+    <form method="get">
+        <label for="search">Pretraži po imenu ili username-u:</label>
+        <input type="text" name="search" id="search" value="{{ request.GET.search }}">
+        <button type="submit">Pretraži</button>
+    </form>
+
+
     <ul>
         {% for konobar in konobari %}
             <li>
@@ -15,5 +29,10 @@
             </li>
         {% endfor %}
     </ul>
+
+
+    
+
+
 </body>
 </html>

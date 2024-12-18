@@ -40,6 +40,14 @@
     <br>
 
     <form method="get">
+
+        <label for="search">Pretraga po nazivu:</label>
+        <input type="text" name="search" id="search" value="{{ request.GET.search }}" placeholder="Unesite naziv pića">
+
+        <br>
+        <br>
+
+
         <!-- Filtriranje prema alkoholu -->
         <label for="alkohol">Alkohol:</label>
         <select name="alkohol" id="alkohol">
@@ -47,6 +55,9 @@
             <option value="true" {% if request.GET.alkohol == 'true' %}selected{% endif %}>Sadrži alkohol</option>
             <option value="false" {% if request.GET.alkohol == 'false' %}selected{% endif %}>Ne sadrži alkohol</option>
         </select>
+
+        <br>
+        <br>
 
         <!-- Filtriranje prema veganskom statusu -->
         <label for="vegansko">Vegansko:</label>
@@ -56,12 +67,23 @@
             <option value="false" {% if request.GET.vegansko == 'false' %}selected{% endif %}>Nije vegansko</option>
         </select>
 
+        <br>
+        <br>
+
         <!-- Filtriranje prema minimalnoj količini -->
         <label for="min_kolicina">Minimalna količina (ml):</label>
-        <input type="number" name="min_kolicina" value="{{ request.GET.min_kolicina }}"  min="0" id="min_kolicina"
-         required  onblur="setDefaultValue(this)" defaultValue="100">
+        <input type="number" name="min_kolicina" value="{{ request.GET.min_kolicina|default:0 }}" min="0" id="min_kolicina">
+
+         <br>
+         <br>
+         <br>
+
+         <div style="width: 100px; display: inline-block;"></div>
 
         <button type="submit">Filtriraj</button>
+
+        
+
     </form>
 
 

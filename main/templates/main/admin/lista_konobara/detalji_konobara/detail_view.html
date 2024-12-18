@@ -5,10 +5,25 @@
     <title>Detalji konobara</title>
 </head>
 <body>
+
+   
+
+
     <h1>{{ konobar.konobar_ime }} {{ konobar.konobar_prezime }}</h1>
+
+    <a href="{% url 'main:konobar_list_view' %}">
+        povratak
+    </a>
+    
+    <br>
+    <br>
+
+
     <p>Datum zaposlenja: {{ konobar.konobar_datum_zaposlenja }}</p>
-    <p>Zarada: {{ konobar.konobar_zarada }} HRK</p>
+    <p>Zarada: {{ konobar.konobar_zarada }} EURA</p>
     <p>Telefon: {{ konobar.konobar_telefon }}</p>
+
+    
 
     <h2>Narudžbe</h2>
     <ul>
@@ -20,5 +35,7 @@
             </li>
         {% endfor %}
     </ul>
+
+ 
 </body>
 </html>

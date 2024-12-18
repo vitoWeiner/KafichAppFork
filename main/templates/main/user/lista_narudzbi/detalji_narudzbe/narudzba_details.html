@@ -36,15 +36,29 @@
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
+
+    {% if narudzba.narudzba_placena %}
+    <button type="button" class="btn btn-success" disabled>Dodaj stavku</button>
+    {% else %}
     <button type="submit" name="dodaj_stavku" class="btn btn-success">Dodaj stavku</button>
+    {% endif %}
 </form>
 
 <!-- Plaćanje narudžbe -->
 <h3>Plaćanje narudžbe</h3>
+
+
+
 <form method="post">
     {% csrf_token %}
+
+    {% if narudzba.narudzba_placena %}
+    <button type="button" class="btn btn-success" disabled>Narudžba plaćena</button>
+    {% else %}
     <button type="submit" name="plati" class="btn btn-warning">Plati narudžbu</button>
+    {% endif %}
 </form>
+
 
 <!-- povratak na popis narudžbi -->
 <a href="{% url 'main:lista_narudzbi' %}" class="btn btn-secondary">Povratak na popis narudžbi</a>
