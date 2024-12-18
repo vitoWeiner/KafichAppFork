@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalji Korisnika</title>
+</head>
+<body>
+    <h1>Detalji Korisnika</h1>
+
+    <h2>Podaci iz User modela</h2>
+    <p>Korisničko ime: {{ user.username }}</p>
+    <p>Email: {{ user.email }}</p>
+    
+
+    <h2>Podaci iz Konobar modela</h2>
+    <p>Ime: {{ konobar.konobar_ime }}</p>
+    <p>Prezime: {{ konobar.konobar_prezime }}</p>
+    <p>Datum zaposlenja: {{ konobar.konobar_datum_zaposlenja }}</p>
+    <p>Zarada: {{ konobar.konobar_zarada }}</p>
+    <p>Telefon: {{ konobar.konobar_telefon }}</p>
+
+    <a href="{% url 'main:homepage' %}"><button>Natrag na početnu stranicu</button></a>
+</body>
+</html>

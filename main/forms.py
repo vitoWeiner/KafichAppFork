@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User, Group
 
 from .models import *
-
+from django.contrib.auth.forms import UserCreationForm
 
 
 
@@ -81,6 +81,36 @@ class AdminCreationForm(forms.ModelForm):
 
         return user
 
+
+# registracija konobara samostalno, ne od strane admina
+
+class KonobarRegisterForm(UserCreationForm):
+
+    konobar_ime = forms.CharField(label="Ime", required=True)
+    konobar_prezime = forms.CharField(label="Prezime", required=True)
+    konobar_telefon = forms.CharField(label="Telefon", required=False)
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']
+
+    def save(self, commit=True):
+        user = super().save(commit=False)  
+
+        if commit:
+            user.save()  
+
+        group = Group.objects.get(name='Korisnik')  
+        group.user_set.add(user)  
+
+       
+        Konobar.objects.create(
+            user=user,
+            konobar_ime=self.cleaned_data['konobar_ime'],
+            konobar_prezime=self.cleaned_data['konobar_prezime'],
+            konobar_telefon=self.cleaned_data.get('konobar_telefon')
+        )
+        return user
 
 
 class PiceForm(forms.ModelForm):

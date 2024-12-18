@@ -1,11 +1,15 @@
-<form method="post" action="{% url 'main:register' %}">
-    {% csrf_token %}
-
-    {% if form.errors %}
-        <p>Greška.</p>
-    {% endif %}
-
-    {{ form }}
-
-    <input type="submit" value="Register" />
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registracija</title>
+</head>
+<body>
+    <h1>Registracija korisnika</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }} <!-- Automatski prikaz svih polja forme u paragrafima -->
+        <button type="submit">Registriraj se</button>
+    </form>
+</body>
+</html>

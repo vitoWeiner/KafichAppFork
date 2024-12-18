@@ -29,7 +29,7 @@ class Konobar(models.Model):
     
 
     def __str__(self):
-        return self.konobar_korisnicko_ime
+        return self.konobar_ime
 
 
 

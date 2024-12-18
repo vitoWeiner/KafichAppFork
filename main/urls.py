@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 
-app_name = 'main'  # here for namespacing of urls.
+app_name = 'main' 
 
 urlpatterns = [
 
@@ -25,6 +25,7 @@ urlpatterns += [
     path('kreiraj-narudzbu/', views.kreiraj_narudzbu, name='kreiraj_narudzbu'),
     path('detalji_narudzbe/<uuid:narudzba_sifra>/', views.NarudzbaDetailView.as_view(), name='detalji_narudzbe'),
     path('stavka_narudzbe/<uuid:pk>/', views.StavkaNarudzbeDetailView.as_view(), name='stavka_narudzbe'),
+    path('konobar/detalji/', views.KonobarDetailView.as_view(), name='konobar_detalji'),
     
 ]
 

@@ -11,7 +11,10 @@ from django.db.models import Q
 from django_filters import *
 
 from django.forms import inlineformset_factory
+from django.contrib.auth.mixins import LoginRequiredMixin
 
+
+ ## ## # from django.contrib.auth.models import User
 
 ## Create your views here.
 @login_required
@@ -34,12 +37,15 @@ def homepage(request):
 
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)  
+        form = KonobarRegisterForm(request.POST)  
         if form.is_valid():  
             user = form.save()  
 
-            group = Group.objects.get(name='Korisnik')  
-            group.user_set.add(user)  
+            #group = Group.objects.get(name='Korisnik')  
+            #group.user_set.add(user)  
+
+
+           # Konobar.objects.create(user=user)
 
 
             username = form.cleaned_data['username']
@@ -48,7 +54,7 @@ def register(request):
             login(request, user) 
             return redirect('main:homepage') 
     else:
-        form = UserCreationForm()  
+        form = KonobarRegisterForm()  
 
     context = {'form': form}
     return render(request, 'registration/register.html', context)
@@ -298,6 +304,21 @@ class StavkaNarudzbeDetailView(DetailView):
     model = StavkaNarudzbe
     template_name = 'main/user/lista_narudzbi/detalji_narudzbe/detalji_stavke_narudzbe/detail_view.html'
     context_object_name = 'stavka'
+
+
+class KonobarDetailView(LoginRequiredMixin, DetailView):
+    model = Konobar
+    template_name = 'main/user/podaci_korisnika/detailView.html'
+    context_object_name = 'konobar'
+
+    def get_object(self, queryset=None):
+       
+        return self.request.user.konobar
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user'] = self.request.user 
+        return context
 
 
 
