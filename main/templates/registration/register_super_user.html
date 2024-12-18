@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registracija Admina</title>
+</head>
+<body>
+    <h2>Registracija Admina</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Registriraj se</button>
+    </form>
+    <a href="{% url 'login' %}">Povratak na login stranicu</a>
+</body>
+</html>

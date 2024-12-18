@@ -59,6 +59,28 @@ def register(request):
     context = {'form': form}
     return render(request, 'registration/register.html', context)
 
+def register_superuser(request):
+
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.is_staff = True
+            user.is_superuser = True
+            user.save()
+
+
+            group = Group.objects.get(name='Administrator')
+            group.user_set.add(user) 
+
+
+            return redirect('login')  # Redirektuje na login stranicu
+    else:
+        form = UserCreationForm()
+
+    return render(request, 'registration/register_super_user.html', {'form': form})
+
+
 
 
 @login_required

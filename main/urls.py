@@ -8,6 +8,7 @@ urlpatterns = [
     path('', views.homepage, name='homepage'),   # name = 'homepage' je referenca na url, kako bi se moglo pozvati iz html predlozaka bez da se pise cijeli url
     path('manage-users/', views.manage_users, name='manage_users'),
     path('register/', views.register, name='register'), 
+    path('register-super-user', views.register_superuser, name='register_superuser')
 ]
 
 

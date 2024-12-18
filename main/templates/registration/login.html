@@ -35,8 +35,12 @@
         <input type="hidden" name="next" value="{{ next }}" />
     </form>
 
-    <p>Nemate račun? <a href="{% url 'main:register' %}">Registrirajte se ovdje</a></p>
+    <p>Nemate račun? <a href="{% url 'main:register' %}">Registrirajte se ovdje</a> kao novi konobar</p>
     <p>Log in sa podacima od super-usera ima posebno sucelje napravljeno za uredivanje korisnika</p>
+    <p>Registrirajte se kao admin: </p>
+    <a href="{% url 'main:register_superuser' %}">Registrirajte se ovdje</a> kao admin 
+    <br> <br>
+    (ovo je napravljeno samo za svrhu isprobavanja funkcijonalnosti, nece biti u konacnoj aplikaciji mogucnosti registracije kao admin direktno iz log in stranice)
 
 </body>
 </html>
