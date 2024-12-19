@@ -88,9 +88,14 @@ def manage_users(request):
     if request.user.groups.filter(name='Korisnik').exists():
         return redirect('main:homepage')  
 
-    users = User.objects.all()  
-    return render(request, 'main/admin/upravljanje_korisnicima/manage_users.html', {'users': users})
+    query = request.GET.get('q')  # Dobijanje pretraživanog pojma iz GET zahteva
 
+    if query:
+        users = User.objects.filter(username__icontains=query)  # Filtriranje korisnika po korisničkom imenu
+    else:
+        users = User.objects.all()  # Prikaz svih korisnika ako nema pretrage
+
+    return render(request, 'main/admin/upravljanje_korisnicima/manage_users.html', {'users': users})
 
 
 
@@ -328,6 +333,9 @@ class NarudzbaDetailView(DetailView):
                 nova_stavka = form.save(commit=False)
                 nova_stavka.stavka_narudzba = narudzba
                 nova_stavka.save()
+
+                narudzba.narudzba_kolicina_stavki += 1
+                narudzba.save()
             
            
             return redirect('main:detalji_narudzbe', narudzba_sifra=narudzba.narudzba_sifra)
@@ -390,7 +398,18 @@ class KonobarDetailViewFromAdmin(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         konobar = self.get_object()
-        context['narudzbe'] = konobar.user.narudzbe.all()
+
+
+        filter_status = self.request.GET.get('placeno', None)
+
+        if filter_status == 'true':
+            narudzbe = konobar.user.narudzbe.filter(narudzba_placena=True)
+        elif filter_status == 'false':
+            narudzbe = konobar.user.narudzbe.filter(narudzba_placena=False)
+        else:
+            narudzbe = konobar.user.narudzbe.all()
+
+        context['narudzbe'] = narudzbe
         return context
 
 class NarudzbaDetailViewFromAdmin(DetailView):
@@ -405,7 +424,21 @@ class NarudzbaDetailViewFromAdmin(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         narudzba = self.get_object()
-        context['stavke'] = narudzba.stavke.all()  
+
+
+        search_pice = self.request.GET.get('search_pice', '')
+
+        if search_pice:
+            stavke = narudzba.stavke.filter(
+                stavka_pice__pice_naziv__icontains=search_pice
+            )
+
+        else:
+            stavke = narudzba.stavke.all()
+
+
+
+        context['stavke'] = stavke
         return context
 
 """

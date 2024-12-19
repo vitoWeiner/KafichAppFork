@@ -23,6 +23,27 @@
     <p>Zarada: {{ konobar.konobar_zarada }} EURA</p>
     <p>Telefon: {{ konobar.konobar_telefon }}</p>
 
+
+    <br>
+    <br>
+    <form method="GET">
+        <label>
+            <input type="radio" name="placeno" value="true" {% if request.GET.placeno == "true" %}checked{% endif %}>
+            Plaćene
+        </label>
+        <label>
+            <input type="radio" name="placeno" value="false" {% if request.GET.placeno == "false" %}checked{% endif %}>
+            Neplaćene
+        </label>
+        <label>
+            <input type="radio" name="placeno" value="" {% if not request.GET.placeno %}checked{% endif %}>
+            Sve
+        </label>
+        <button type="submit">Filtriraj</button>
+    </form>
+    <br>
+    <br>
+
     
 
     <h2>Narudžbe</h2>

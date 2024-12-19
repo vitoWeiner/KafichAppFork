@@ -8,6 +8,20 @@
     <h1>Upravljanje korisnicima</h1>
     <a href="{% url 'main:homepage' %}">Nazad na početnu</a>
     <a href="{% url 'main:add_user' %}">Dodaj novog korisnika</a> 
+
+
+    <br>
+    <br>
+
+    <form method="GET" action="{% url 'main:manage_users' %}">
+        <input type="text" name="q" placeholder="Pretraži korisnike" value="{{ request.GET.q|default:'' }}">
+        <button type="submit">Pretraži</button>
+    </form>
+
+    <br>
+    <br>
+
+
     <table border="1">
         <tr>
             <th>ID</th>
