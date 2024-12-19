@@ -17,6 +17,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
  ## ## # from django.contrib.auth.models import User
 
 ## Create your views here.
+
+
+#homepage od korisnika i od admina
+
 @login_required
 def homepage(request):
 
@@ -34,7 +38,7 @@ def homepage(request):
 
 
  
-
+# funkcijonalnost za registriranje novog korisnika (konobara)
 def register(request):
     if request.method == 'POST':
         form = KonobarRegisterForm(request.POST)  
@@ -59,6 +63,11 @@ def register(request):
     context = {'form': form}
     return render(request, 'registration/register.html', context)
 
+
+
+
+# funkcijonalnost za registriranje novog admina
+
 def register_superuser(request):
 
     if request.method == 'POST':
@@ -74,7 +83,7 @@ def register_superuser(request):
             group.user_set.add(user) 
 
 
-            return redirect('login')  # Redirektuje na login stranicu
+            return redirect('login')  
     else:
         form = UserCreationForm()
 
@@ -82,22 +91,27 @@ def register_superuser(request):
 
 
 
+# funkcijonalnost kojoj se pristupa iz sucelja admina:
+# admin pomocu ove funkcijonalnosti moze pregledavati i uredivati podatke trenutnih korisnika, ili dodavati nove korisnike
 
 @login_required
 def manage_users(request):
     if request.user.groups.filter(name='Korisnik').exists():
         return redirect('main:homepage')  
 
-    query = request.GET.get('q')  # Dobijanje pretraživanog pojma iz GET zahteva
+    query = request.GET.get('q')  
 
     if query:
-        users = User.objects.filter(username__icontains=query)  # Filtriranje korisnika po korisničkom imenu
+        users = User.objects.filter(username__icontains=query)  
     else:
-        users = User.objects.all()  # Prikaz svih korisnika ako nema pretrage
+        users = User.objects.all()  
 
     return render(request, 'main/admin/upravljanje_korisnicima/manage_users.html', {'users': users})
 
 
+
+# funkcijonalnost kojoj se pristupa iz sucelja admina:
+# admin pomocu ove funkcijonalnosti ureduje podatke nekog korisnika
 
 @login_required
 def edit_user(request, user_id):
@@ -113,6 +127,10 @@ def edit_user(request, user_id):
 
     return render(request, 'main/admin/upravljanje_korisnicima/uredivanje_korisnika/edit_user.html', {'user': user})
 
+
+# funkcijonalnost kojoj se pristupa iz sucelja admina:
+# admin pomocu ove funkcijonalnosti brise postojeceg korisnika
+
 @login_required
 def delete_user(request, user_id):
     if request.user.groups.filter(name='Korisnik').exists():
@@ -126,7 +144,8 @@ def delete_user(request, user_id):
     return render(request, 'main/admin/upravljanje_korisnicima/brisanje_korisnika/delete_user.html', {'user': user})
 
 
-
+# funkcijonalnost kojoj se pristupa iz sucelja admina:
+# admin pomocu ove funkcijonalnosti dodaje novog korisnika
 
 @login_required
 def add_user(request):
@@ -137,6 +156,9 @@ def add_user(request):
      #   return redirect('main:homepage')
 
 
+
+# funkcijonalnost kojoj se pristupa iz sucelja admina:
+# admin pomocu ove funkcijonalnosti dodaje novog admina 
 
 def add_admin(request):
     if request.method == 'POST':
@@ -150,6 +172,9 @@ def add_admin(request):
     return render(request, 'main/admin/upravljanje_korisnicima/dodavanje_novog_korisnika/dodavanje_novog_administratora/add_admin.html', {'form': form})
 
 
+# funkcijonalnost kojoj se pristupa iz sucelja admina:
+# admin pomocu ove funkcijonalnosti dodaje novog korisnika koji je konobar
+
 
 def add_konobar(request):
     if request.method == 'POST':
@@ -161,6 +186,11 @@ def add_konobar(request):
         form = KonobarCreationForm()
 
     return render(request, 'main/admin/upravljanje_korisnicima/dodavanje_novog_korisnika/dodavanje_novog_Konobara/add_konobar.html', {'form': form})
+
+
+
+# funkcijonalnost kojoj se pristupa iz sucelja korisnika (konobara):
+# korisnik moze pregledavati podatke ostalih korisnika (ova funkcijonalnost trenutno iskljucena iz UI)
 
 
 @login_required
@@ -186,6 +216,9 @@ def drinks_list_view(request):
 
 """
 
+
+# funkcijonalnost kojoj se pristupa iz sucelja admina:
+# admin pregledava postojeca pica u bazi podataka i moze dodati nova ako zeli
 
 class PiceListView(ListView):
     model = Pice
@@ -228,6 +261,10 @@ class PiceListView(ListView):
         return context
 
 
+
+# funkcijonalnost kojoj se pristupa iz sucelja admina:
+# admin putem ove funkcije dodaje nova pica
+
 def dodaj_pice(request):
     if request.method == 'POST':
         form = PiceForm(request.POST)
@@ -240,6 +277,9 @@ def dodaj_pice(request):
     return render(request, 'main/admin/lista_pica/dodavanje_pica/add_drink.html', {'form': form})
 
 
+
+# funkcijonalnost kojoj se pristupa iz sucelja admina:
+# admin putem ove funkcije pregledava detalje o picima
 
 class PiceDetailView(DetailView):
     model = Pice
@@ -273,7 +313,7 @@ class NarudzbaListView(ListView):
 
         return queryset
 
-
+# konobar putem slijedece funkcije moze kreirati novu narudzbu
 
 @login_required
 def kreiraj_narudzbu(request):
@@ -288,6 +328,8 @@ def kreiraj_narudzbu(request):
 
   
     return redirect('main:lista_narudzbi')
+
+# konobar putem slijedece funkcije moze vidjeti detalje o odabranoj narudzbi iz listviewa
 
 
 class NarudzbaDetailView(DetailView):
@@ -343,11 +385,17 @@ class NarudzbaDetailView(DetailView):
         return super().post(request, *args, **kwargs)
 
 
+# nakon sto je konobar kliknuo na narudzbu, otvaraju mu se detalji narudzbe. tamo moze dodati stavke narudzbe, kada klikne na stavku otvara mu se detail view za stavku
+# detail view za stavku:
+
+
 class StavkaNarudzbeDetailView(DetailView):
     model = StavkaNarudzbe
     template_name = 'main/user/lista_narudzbi/detalji_narudzbe/detalji_stavke_narudzbe/detail_view.html'
     context_object_name = 'stavka'
 
+
+# konobar moze pregledavati svoje osobne podatke (ime, prezime, zarada i slicno)
 
 class KonobarDetailView(LoginRequiredMixin, DetailView):
     model = Konobar
@@ -363,7 +411,8 @@ class KonobarDetailView(LoginRequiredMixin, DetailView):
         context['user'] = self.request.user 
         return context
 
-
+# admin takoder ima pristup listi konobara te moze preko nje pristupiti pogledu za sve njihove narudzbe
+# ovo je listview s konobarima iz sucelja admina
 
 class KonobarListViewFromAdmin(ListView):
     model = Konobar
@@ -373,18 +422,20 @@ class KonobarListViewFromAdmin(ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
 
-        # Uzmi parametar 'search' iz GET zahteva
+        
         search_query = self.request.GET.get('search', '')
 
         if search_query:
-            # Filtriraj queryset na osnovu 'search_query'
+            
             queryset = queryset.filter(
-                Q(konobar_ime__icontains=search_query) |  # Pretraga po imenu konobara
-                Q(user__username__icontains=search_query)  # Pretraga po username-u korisnika
+                Q(konobar_ime__icontains=search_query) |  
+                Q(user__username__icontains=search_query) 
             )
         
         return queryset
 
+
+# detalji o pojedinom konobaru iz sucelja admina 
 
 class KonobarDetailViewFromAdmin(DetailView):
     model = Konobar
@@ -411,6 +462,9 @@ class KonobarDetailViewFromAdmin(DetailView):
 
         context['narudzbe'] = narudzbe
         return context
+
+# admin moze pristupiti svim narudzbama pojedinog konobara
+# slijedeca funkcijonalnost omogucuje pregled detalja svake narudzbe
 
 class NarudzbaDetailViewFromAdmin(DetailView):
     model = Narudzba

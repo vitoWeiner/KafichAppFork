@@ -5,6 +5,7 @@ from .models import *
 from django.contrib.auth.forms import UserCreationForm
 
 
+# forma za kreiranje novog konobara (iz sucelja administratora, administrator kreira novog korisnika)
 
 class KonobarCreationForm(forms.ModelForm):
 
@@ -50,6 +51,8 @@ class KonobarCreationForm(forms.ModelForm):
 
         return user  
 
+
+# forma za kreiranje novog administratora iz sucelja admina:
 
 class AdminCreationForm(forms.ModelForm):
 
@@ -113,6 +116,8 @@ class KonobarRegisterForm(UserCreationForm):
         return user
 
 
+# registracija novog pica od strane admina:
+
 class PiceForm(forms.ModelForm):
     class Meta:
         model = Pice
@@ -125,6 +130,7 @@ class PiceForm(forms.ModelForm):
 
 
 
+# kreiranje nove narudzbe (od strane konobara)
 
 class NarudzbaForm(forms.ModelForm):
     class Meta:
@@ -135,6 +141,7 @@ class NarudzbaForm(forms.ModelForm):
         }
 
 
+# dodavanje stavke narudzbe od strane konobara:
 
 class StavkaNarudzbeForm(forms.ModelForm):
     class Meta:
