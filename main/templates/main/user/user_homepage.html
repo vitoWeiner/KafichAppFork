@@ -17,11 +17,9 @@
         </form>
 
 
-        <a href="{% url 'main:show_other_users' %}">
-            <button type="button">Prikaz drugih korisnika</button>
-        </a>
+       
 
-        <br>
+  
 
         <a href="{% url 'main:lista_narudzbi' %}">
             <button type="button">Lista narudžbi</button>
@@ -32,6 +30,12 @@
         <a href="{% url 'main:konobar_detalji' %}">
             <button>Korisnički podaci</button>
         </a>
+
+        <br>
+
+         <!-- <a href="{% url 'main:show_other_users' %}">
+            <button type="button">Prikaz drugih korisnika</button>
+        </a> -->
 
 
     {% else %}
