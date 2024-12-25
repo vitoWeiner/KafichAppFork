@@ -5,10 +5,11 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group  # Dodano
 from .forms import *
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 from .models import *
 from django.db.models import Q
 from django_filters import *
+from django.urls import reverse_lazy
 
 from django.forms import inlineformset_factory
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -311,7 +312,7 @@ class NarudzbaListView(ListView):
         if placena_filter is not None and placena_filter != "":
             queryset = queryset.filter(narudzba_placena=(placena_filter.lower() == 'true'))
 
-        return queryset
+        return queryset.order_by('narudzba_datum_kreiranja')
 
 # konobar putem slijedece funkcije moze kreirati novu narudzbu
 
@@ -494,6 +495,64 @@ class NarudzbaDetailViewFromAdmin(DetailView):
 
         context['stavke'] = stavke
         return context
+
+
+
+class PiceUpdateView(UpdateView):
+    model = Pice
+    fields = ['pice_naziv', 'pice_opis', 'pice_kolicina_u_ml', 'pice_sadrzi_alkohol', 'pice_vegansko', 'pice_poj_cijena']
+    template_name = 'main/admin/lista_pica/pregled_pica/uredivanje_pica/edit_drink_form.html'
+
+    def get_object(self, queryset=None):
+        """
+        jer url prima UUID, a pk je int, pa treba dohvatiti objekt po pk i izvuci UUID sifru
+        """
+        return get_object_or_404(Pice, pice_sifra=self.kwargs['pk'])
+
+    def get_success_url(self):
+        return reverse_lazy('main:pice_detail', kwargs={'pk': self.object.pk})
+
+class PiceDeleteView(DeleteView):
+    model = Pice
+    template_name = 'main/admin/lista_pica/pregled_pica/brisanje_pica/drink_confirm_delete.html'
+    success_url = reverse_lazy('main:drink_list_view')
+
+    def get_object(self, queryset=None):
+        """
+        jer url prima UUID, a pk je int, pa treba dohvatiti objekt po pk i izvuci UUID sifru
+        """
+        return get_object_or_404(Pice, pice_sifra=self.kwargs['pk'])
+
+
+
+class NarudzbaDeleteView(DeleteView):
+    model = Narudzba
+    template_name = 'main/user/lista_narudzbi/detalji_narudzbe/brisanje_narudzbe/confirm_delete.html' 
+    context_object_name = 'narudzba'
+    success_url = reverse_lazy('main:lista_narudzbi') 
+
+    def get_object(self, queryset=None):
+        """
+        Preuzima objekt na temelju parametra iz URL-a (narudzba_sifra).
+        """
+        return Narudzba.objects.get(narudzba_sifra=self.kwargs['narudzba_sifra'])
+
+
+class StavkaNarudzbeDeleteView(DeleteView):
+    model = StavkaNarudzbe
+    template_name = 'main/user/lista_narudzbi/detalji_narudzbe/detalji_stavke_narudzbe/brisanje_stavke_narudzbe/confirm_delete.html' 
+    context_object_name = 'stavka'
+    
+    def get_success_url(self):
+        
+        return reverse_lazy('main:detalji_narudzbe', kwargs={'narudzba_sifra': self.object.stavka_narudzba.narudzba_sifra})
+
+    def get_object(self, queryset=None):
+        """
+        Preuzima objekt na temelju parametra iz URL-a (stavka_sifra).
+        """
+        return StavkaNarudzbe.objects.get(stavka_sifra=self.kwargs['stavka_sifra'])
+
 
 """
 def detalji_narudzbe(request, narudzba_sifra):

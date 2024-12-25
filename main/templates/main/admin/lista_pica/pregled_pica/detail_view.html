@@ -22,5 +22,12 @@
         <button>Povratak na listu pića</button>
     </a>
 
+    <a href="{% url 'main:drink_update_view' pice.pice_sifra %}">
+        <button>Uredi</button>
+    </a>
+    <a href="{% url 'main:drink_delete_view' pice.pice_sifra %}">
+        <button>Obriši</button>
+    </a>
+
 </body>
 </html>

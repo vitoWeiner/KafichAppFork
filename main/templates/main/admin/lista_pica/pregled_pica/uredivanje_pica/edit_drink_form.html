@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ažuriraj Piće</title>
+</head>
+<body>
+    <h1>Ažuriraj Piće</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Spremi</button>
+    </form>
+
+    <a href="{% url 'main:pice_detail' pk=pice.pk %}">
+        <button>
+            nazad
+        </button>
+    </a>
+
+
+</body>
+</html>

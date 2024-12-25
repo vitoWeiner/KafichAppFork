@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Potvrda brisanja</title>
+</head>
+<body>
+    <h1>Jeste li sigurni da želite obrisati ovu narudžbu?</h1>
+    <p>Narudžba {{ narudzba.narudzba_sifra }} će biti trajno obrisana.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Da, obriši narudžbu</button>
+    </form>
+
+    <a href="{% url 'main:lista_narudzbi' %}" class="btn btn-secondary">Odustani</a>
+</body>
+</html>

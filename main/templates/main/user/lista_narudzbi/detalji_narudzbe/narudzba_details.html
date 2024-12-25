@@ -31,7 +31,7 @@
     </tbody>
 </table>
 
-<!-- Dodavanje nove stavke -->
+
 <h3>Dodaj novu stavku</h3>
 <form method="post">
     {% csrf_token %}
@@ -44,7 +44,7 @@
     {% endif %}
 </form>
 
-<!-- Plaćanje narudžbe -->
+
 <h3>Plaćanje narudžbe</h3>
 
 
@@ -60,5 +60,9 @@
 </form>
 
 
-<!-- povratak na popis narudžbi -->
+
 <a href="{% url 'main:lista_narudzbi' %}" class="btn btn-secondary">Povratak na popis narudžbi</a>
+
+<a href="{% url 'main:narudzba_delete_view' narudzba.narudzba_sifra %}">
+    <button>Obriši</button>
+</a>
