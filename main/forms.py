@@ -4,6 +4,8 @@ from django.contrib.auth.models import User, Group
 from .models import *
 from django.contrib.auth.forms import UserCreationForm
 
+from django.core.exceptions import ValidationError 
+from django.contrib.auth.forms import UserChangeForm
 
 # forma za kreiranje novog konobara (iz sucelja administratora, administrator kreira novog korisnika)
 
@@ -158,10 +160,42 @@ class KonobarForm(forms.ModelForm):
 
     def clean_konobar_telefon(self):
         telefon = self.cleaned_data.get('konobar_telefon')
-        if not telefon.isdigit():
+        if telefon and not telefon.isdigit():
             raise forms.ValidationError("Telefon mora sadržavati samo brojeve.")
         return telefon
 
+
+# UserForm - za azuriranje konobara, tablice User
+
+class UserForm(UserChangeForm):
+
+
+    password = None
+
+    class Meta:
+        model = User
+        fields = ['username', 'email']
+   
+    
+
+
+class StavkaNarudzbeForm(forms.ModelForm):
+    class Meta:
+        model = StavkaNarudzbe
+        fields = ['stavka_kolicina_pica', 'stavka_pice']
+
+    stavka_pice = forms.ModelChoiceField(queryset=Pice.objects.all(), empty_label="Izaberi piće")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['stavka_pice'].queryset = Pice.objects.all()  
+
+    def clean_stavka_kolicina_pica(self):
+        kolicina = self.cleaned_data.get('stavka_kolicina_pica')
+        if kolicina <= 0:
+            raise forms.ValidationError("Količina mora biti veća od nule.")
+        return kolicina
 
 """
 class UserCreationWithGroupForm(forms.ModelForm):

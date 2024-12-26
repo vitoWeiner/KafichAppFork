@@ -9,7 +9,12 @@
 
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        <h2>Podaci korisničkog računa</h2>
+        {{ user_form.as_p }}
+
+        <h2>Podaci konobara</h2>
+        {{ konobar_form.as_p }}
+
         <button type="submit">Spremi Promjene</button>
     </form>
 

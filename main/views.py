@@ -13,7 +13,7 @@ from django.urls import reverse_lazy
 
 from django.forms import inlineformset_factory
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+from django.contrib.auth import update_session_auth_hash
 
  ## ## # from django.contrib.auth.models import User
 
@@ -347,6 +347,7 @@ class NarudzbaDetailView(DetailView):
         narudzba = self.get_object()  
         context['stavke'] = StavkaNarudzbe.objects.filter(stavka_narudzba=narudzba)
         context['form'] = StavkaNarudzbeForm()  
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -504,13 +505,13 @@ class PiceUpdateView(UpdateView):
     template_name = 'main/admin/lista_pica/pregled_pica/uredivanje_pica/edit_drink_form.html'
 
     def get_object(self, queryset=None):
-        """
-        jer url prima UUID, a pk je int, pa treba dohvatiti objekt po pk i izvuci UUID sifru
-        """
+     
         return get_object_or_404(Pice, pice_sifra=self.kwargs['pk'])
 
     def get_success_url(self):
         return reverse_lazy('main:pice_detail', kwargs={'pk': self.object.pk})
+
+
 
 class PiceDeleteView(DeleteView):
     model = Pice
@@ -518,9 +519,7 @@ class PiceDeleteView(DeleteView):
     success_url = reverse_lazy('main:drink_list_view')
 
     def get_object(self, queryset=None):
-        """
-        jer url prima UUID, a pk je int, pa treba dohvatiti objekt po pk i izvuci UUID sifru
-        """
+
         return get_object_or_404(Pice, pice_sifra=self.kwargs['pk'])
 
 
@@ -532,9 +531,7 @@ class NarudzbaDeleteView(DeleteView):
     success_url = reverse_lazy('main:lista_narudzbi') 
 
     def get_object(self, queryset=None):
-        """
-        Preuzima objekt na temelju parametra iz URL-a (narudzba_sifra).
-        """
+
         return Narudzba.objects.get(narudzba_sifra=self.kwargs['narudzba_sifra'])
 
 
@@ -548,66 +545,93 @@ class StavkaNarudzbeDeleteView(DeleteView):
         return reverse_lazy('main:detalji_narudzbe', kwargs={'narudzba_sifra': self.object.stavka_narudzba.narudzba_sifra})
 
     def get_object(self, queryset=None):
-        """
-        Preuzima objekt na temelju parametra iz URL-a (stavka_sifra).
-        """
+   
         return StavkaNarudzbe.objects.get(stavka_sifra=self.kwargs['stavka_sifra'])
+
+    def delete(self, request, *args, **kwargs):
+
+        
+   
+        stavka = self.get_object()
+
+
+        
+  
+        narudzba = stavka.stavka_narudzba
+        narudzba.narudzba_kolicina_stavki -= 1
+        narudzba.save()
+
+     
+        return super().delete(request, *args, **kwargs)
 
 
 class StavkaNarudzbeUpdateView(UpdateView):
     model = StavkaNarudzbe
-    fields = ['stavka_kolicina_pica']
-    template_name = 'main/user/lista_narudzbi/detalji_narudzbe/azuriranje_stavke/azuriranje_stavke.html'
+    form_class = StavkaNarudzbeForm
+    template_name = 'main/user/lista_narudzbi/detalji_narudzbe/detalji_stavke_narudzbe/azuriranje_stavke/azuriranje_stavke.html'
 
     def form_valid(self, form):
-        # Recalculates total price before saving
+       
         self.object = form.save(commit=False)
-        self.object.stavka_ukupna_cijena = (
-            self.object.stavka_kolicina_pica * self.object.stavka_pice.pice_poj_cijena
-        )
+    
+        self.object.stavka_ukupna_cijena = self.object.stavka_kolicina_pica * self.object.stavka_pice.pice_poj_cijena
         self.object.save()
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('main:detalji_narudzbe', kwargs={'narudzba_sifra': self.object.stavka_narudzba.narudzba_sifra})
+   
+        return reverse_lazy('main:stavka_narudzbe', kwargs={'pk': self.object.stavka_sifra})
 
 
+
+# KonobarUpdateView
 
 class KonobarUpdateView(LoginRequiredMixin, UpdateView):
-    model = Konobar
-    form_class = KonobarForm
     template_name = 'main/user/podaci_korisnika/azuriranje_korisnika/update_view.html'
-    context_object_name = 'konobar'
-    # fields = ['konobar_ime', 'konobar_prezime', 'konobar_telefon']  # Polja koja korisnik može menjati
 
-    def get_object(self, queryset=None):
-        # Pristup trenutno prijavljenom korisniku i njegovim podacima
-        return self.request.user.konobar
+    def get(self, request, *args, **kwargs):
+        user_form = UserForm(instance=request.user)
+        konobar_form = KonobarForm(instance=request.user.konobar)
+        return render(request, self.template_name, {'user_form': user_form, 'konobar_form': konobar_form})
 
-    def get_success_url(self):
-        # Nakon uspešnog ažuriranja, korisnika vraća na detalje
-        return reverse_lazy('main:konobar_detalji')
+    def post(self, request, *args, **kwargs):
+        user_form = UserForm(request.POST, instance=request.user)
+        konobar_form = KonobarForm(request.POST, instance=request.user.konobar)
+
+        if user_form.is_valid() and konobar_form.is_valid():
+           
+            user = user_form.save(commit=False) 
+
+
+
+            user.save()  
+            konobar_form.save() 
+
+
+            return redirect('main:konobar_detalji')
+
+        return render(request, self.template_name, {'user_form': user_form, 'konobar_form': konobar_form})
 
 
 class UserDeleteView(LoginRequiredMixin, DeleteView):
     model = User
     template_name = 'main/user/podaci_korisnika/brisanje_korisnika/delete_view.html'
-    success_url = reverse_lazy('main:homepage')  # Preusmjeravanje nakon brisanja
+    success_url = reverse_lazy('main:homepage') 
 
     def get_object(self, queryset=None):
-        # Ograničenje da korisnik može obrisati samo svoj račun
+    
         return self.request.user
 
 """
 def detalji_narudzbe(request, narudzba_sifra):
-    # Dohvati narudžbu prema šifri
+
     narudzba = get_object_or_404(Narudzba, narudzba_sifra=narudzba_sifra)
     
-    # Dohvati sve stavke za ovu narudžbu
+
     stavke = StavkaNarudzbe.objects.filter(stavka_narudzba=narudzba)
     
     if request.method == 'POST':
-        # Ako je kliknuto na gumb "Plati", ažuriraj narudžbu
+
         if 'plati' in request.POST:
             narudzba.narudzba_placena = True
             narudzba.save()
@@ -621,7 +645,7 @@ def detalji_narudzbe(request, narudzba_sifra):
 
 
 def kreiraj_narudzbu(request):
-    # Formset za dodavanje više stavki odjednom
+
     StavkaFormSet = inlineformset_factory(
         Narudzba,
         StavkaNarudzbe,
