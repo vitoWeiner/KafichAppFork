@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ažuriraj stavku narudžbe</title>
+</head>
+<body>
+    <h1>Ažuriraj količinu za {{ object.stavka_pice.pice_naziv }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">Spremi promjene</button>
+    </form>
+    <a href="{% url 'main:detalji_narudzbe' object.stavka_narudzba.narudzba_sifra %}" class="btn btn-secondary">Povratak</a>
+</body>
+</html>

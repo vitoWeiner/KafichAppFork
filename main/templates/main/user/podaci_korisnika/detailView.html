@@ -20,5 +20,19 @@
     <p>Telefon: {{ konobar.konobar_telefon }}</p>
 
     <a href="{% url 'main:homepage' %}"><button>Natrag na početnu stranicu</button></a>
+
+    <br>
+    <br>
+
+    <a href="{% url 'main:konobar_update' %}">
+        <button>Uredi Podatke</button>
+    </a>
+
+    <br>
+    <br>
+
+    <a href="{% url 'main:delete_user' %}" class="btn btn-danger">Obriši račun</a>
+
+
 </body>
 </html>

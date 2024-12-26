@@ -41,6 +41,10 @@ urlpatterns += [
     path('<uuid:pk>/delete/', views.PiceDeleteView.as_view(), name='drink_delete_view'),
     path('narudzba/<uuid:narudzba_sifra>/delete/', views.NarudzbaDeleteView.as_view(), name='narudzba_delete_view'),
     path('stavka_narudzbe/<uuid:stavka_sifra>/delete/', views.StavkaNarudzbeDeleteView.as_view(), name='stavka_delete_view'),
+    path('stavka/<uuid:pk>/update/', views.StavkaNarudzbeUpdateView.as_view(), name='stavka_update_view'),
+    path('konobar/update/', views.KonobarUpdateView.as_view(), name='konobar_update'),
+    path('delete-user/', views.UserDeleteView.as_view(), name='delete_user')
+
 
 
 

@@ -94,3 +94,5 @@ class StavkaNarudzbe(models.Model):
 
     def __str__(self):
         return f"{self.stavka_narudzba.narudzba_sifra} - {self.stavka_pice.pice_naziv} (x{self.stavka_kolicina_pica})"
+
+

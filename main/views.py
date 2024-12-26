@@ -554,6 +554,50 @@ class StavkaNarudzbeDeleteView(DeleteView):
         return StavkaNarudzbe.objects.get(stavka_sifra=self.kwargs['stavka_sifra'])
 
 
+class StavkaNarudzbeUpdateView(UpdateView):
+    model = StavkaNarudzbe
+    fields = ['stavka_kolicina_pica']
+    template_name = 'main/user/lista_narudzbi/detalji_narudzbe/azuriranje_stavke/azuriranje_stavke.html'
+
+    def form_valid(self, form):
+        # Recalculates total price before saving
+        self.object = form.save(commit=False)
+        self.object.stavka_ukupna_cijena = (
+            self.object.stavka_kolicina_pica * self.object.stavka_pice.pice_poj_cijena
+        )
+        self.object.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('main:detalji_narudzbe', kwargs={'narudzba_sifra': self.object.stavka_narudzba.narudzba_sifra})
+
+
+
+class KonobarUpdateView(LoginRequiredMixin, UpdateView):
+    model = Konobar
+    form_class = KonobarForm
+    template_name = 'main/user/podaci_korisnika/azuriranje_korisnika/update_view.html'
+    context_object_name = 'konobar'
+    # fields = ['konobar_ime', 'konobar_prezime', 'konobar_telefon']  # Polja koja korisnik može menjati
+
+    def get_object(self, queryset=None):
+        # Pristup trenutno prijavljenom korisniku i njegovim podacima
+        return self.request.user.konobar
+
+    def get_success_url(self):
+        # Nakon uspešnog ažuriranja, korisnika vraća na detalje
+        return reverse_lazy('main:konobar_detalji')
+
+
+class UserDeleteView(LoginRequiredMixin, DeleteView):
+    model = User
+    template_name = 'main/user/podaci_korisnika/brisanje_korisnika/delete_view.html'
+    success_url = reverse_lazy('main:homepage')  # Preusmjeravanje nakon brisanja
+
+    def get_object(self, queryset=None):
+        # Ograničenje da korisnik može obrisati samo svoj račun
+        return self.request.user
+
 """
 def detalji_narudzbe(request, narudzba_sifra):
     # Dohvati narudžbu prema šifri

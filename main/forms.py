@@ -149,6 +149,18 @@ class StavkaNarudzbeForm(forms.ModelForm):
         fields = ['stavka_pice', 'stavka_kolicina_pica']
 
 
+# forma za azuriranje konobara od strane samog konobara:
+
+class KonobarForm(forms.ModelForm):
+    class Meta:
+        model = Konobar
+        fields = ['konobar_ime', 'konobar_prezime', 'konobar_telefon']
+
+    def clean_konobar_telefon(self):
+        telefon = self.cleaned_data.get('konobar_telefon')
+        if not telefon.isdigit():
+            raise forms.ValidationError("Telefon mora sadržavati samo brojeve.")
+        return telefon
 
 
 """

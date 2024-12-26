@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Uredi Podatke</title>
+</head>
+<body>
+    <h1>Uredi Podatke</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Spremi Promjene</button>
+    </form>
+
+    <a href="{% url 'main:konobar_detalji' %}"><button>Natrag</button></a>
+</body>
+</html>

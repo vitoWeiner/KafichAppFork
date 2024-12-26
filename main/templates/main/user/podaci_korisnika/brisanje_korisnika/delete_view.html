@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Potvrda brisanja računa</title>
+</head>
+<body>
+    <h1>Potvrda brisanja korisničkog računa</h1>
+    <p>Jeste li sigurni da želite obrisati svoj korisnički račun?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Da, obriši račun</button>
+        <a href="{% url 'main:konobar_detalji' %}" class="btn btn-secondary">Odustani</a>
+    </form>
+</body>
+</html>

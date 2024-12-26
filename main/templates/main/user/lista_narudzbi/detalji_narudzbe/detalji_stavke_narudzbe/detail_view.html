@@ -14,13 +14,19 @@
 
 
   {% if not stavka.stavka_narudzba.narudzba_placena %}
-  <h3>Brisanje stavke narudžbe</h3>
+  <h3>Opcije stavke</h3>
 <form method="get" action="{% url 'main:stavka_delete_view' stavka.stavka_sifra %}">
     {% csrf_token %}
     <button type="submit" class="btn btn-danger">Obriši stavku</button>
 </form>
 
+<form method="get" action="{% url 'main:stavka_update_view' stavka.stavka_sifra %}">
+  <button type="submit" class="btn btn-primary">Ažuriraj količinu</button>
+</form>
+
 {% else %}
     
     <button type="button" class="btn btn-danger" disabled>Stavka ne može biti obrisana jer je narudžba plaćena</button>
+    <br>
+    <button type="button" class="btn btn-primary" disabled>Stavka ne može biti ažurirana jer je narudžba plaćena</button>
 {% endif %}
