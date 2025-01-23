@@ -1,0 +1,32 @@
+<h1>Stvaranje novog pića</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    <label>Naziv:</label>
+    <input type="text" name="pice_naziv" required><br>
+
+    <label>Opis:</label>
+    <textarea name="pice_opis" required></textarea><br>
+
+    <label>Količina (ml):</label>
+    <input type="number" name="pice_kolicina_u_ml" required><br>
+
+    <label>Cijena:</label>
+    <input type="text" name="pice_poj_cijena" required><br>
+
+    <label>
+        <input type="checkbox" name="pice_sadrzi_alkohol">
+        Sadrži alkohol
+    </label><br>
+
+    <label>
+        <input type="checkbox" name="pice_vegansko">
+        Vegansko
+    </label><br>
+
+    <button type="submit">Stvori</button>
+</form>
+
+<a href="{% url 'main:pica_list_view_REST' %}">
+    <button>Natrag na listu</button>
+</a>

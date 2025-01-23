@@ -1,0 +1,38 @@
+<h1>Ažuriranje pića</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    <label>Naziv:</label>
+    <input type="text" name="pice_naziv" value="{{ pice.pice_naziv }}" required><br>
+
+    <label>Opis:</label>
+    <textarea name="pice_opis" required>{{ pice.pice_opis }}</textarea><br>
+
+    <label>Količina (ml):</label>
+    <input type="number" name="pice_kolicina_u_ml" value="{{ pice.pice_kolicina_u_ml }}" required><br>
+
+    <label>Cijena:</label>
+    <input type="text" name="pice_poj_cijena" value="{{ pice.pice_poj_cijena }}" required><br>
+
+    <label>
+        <input type="checkbox" name="pice_sadrzi_alkohol" {% if pice.pice_sadrzi_alkohol %}checked{% endif %}>
+        Sadrži alkohol
+    </label><br>
+
+    <label>
+        <input type="checkbox" name="pice_vegansko" {% if pice.pice_vegansko %}checked{% endif %}>
+        Vegansko
+    </label><br>
+
+    <button type="submit">Ažuriraj</button>
+</form>
+
+<form method="POST" action="{% url 'main:pica_delete_view_REST' pice_sifra=pice.pice_sifra %}">
+    {% csrf_token %}
+    <button type="submit" onclick="return confirm('Jeste li sigurni da želite obrisati ovo piće?')">Obriši</button>
+</form>
+
+
+<a href="{% url 'main:pica_list_view_REST' %}">
+    <button>Natrag na listu</button>
+</a>

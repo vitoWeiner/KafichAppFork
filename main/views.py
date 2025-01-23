@@ -15,6 +15,173 @@ from django.forms import inlineformset_factory
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import update_session_auth_hash
 
+
+from main.serializers import PiceSerializer
+from rest_framework import viewsets
+
+from rest_framework.permissions import IsAuthenticated
+
+import requests
+
+from django.shortcuts import render
+
+from requests.auth import HTTPBasicAuth
+
+
+
+class PiceViewSet(viewsets.ModelViewSet):
+    queryset = Pice.objects.all().order_by('pice_naziv')
+    serializer_class = PiceSerializer
+    permission_classes = [IsAuthenticated]  
+    lookup_field = 'pice_sifra'  
+
+
+@login_required
+def pica_list_view_REST(request):
+
+
+    if request.user.is_authenticated:
+        session = requests.Session()
+        session.cookies.update(request.COOKIES)
+        response = session.get('http://localhost:8000/RESTfulAPI/pica_restful/')
+
+        if response.status_code == 200:
+            pica_data = response.json()  
+        
+        else:
+            pica_data = []
+        
+        return render(request, 'main/admin/lista_pica_REST/list_view.html', {'pica_data': pica_data})
+
+    else:
+        pica_data = []
+        return render(request, 'main/admin/lista_pica_REST/list_view.html', {'pica_data': pica_data})
+
+
+
+    response = requests.get('http://localhost:8000/RESTfulAPI/pica_restful/')
+
+    if response.status_code == 200:
+        pica_data = response.json()  
+    else:
+        pica_data = []
+
+    return render(request, 'main/admin/lista_pica_REST/list_view.html', {'pica_data': pica_data})
+
+
+
+
+
+
+
+
+@login_required
+def pica_update_view(request, pice_sifra):
+
+    if request.user.is_authenticated:
+
+        session = requests.Session()
+        session.cookies.update(request.COOKIES)
+
+        if request.method == 'GET':
+
+    # Dohvaćanje pića putem REST API-ja
+            response = session.get(f'http://localhost:8000//RESTfulAPI/pica_restful/{pice_sifra}/')
+
+            print ('posted')
+    
+            if response.status_code == 200:
+                pice_data = response.json()
+            else:
+                return HttpResponse(f"Piće nije pronađeno {response.status_code} ", status=response.status_code)
+
+        elif request.method == 'POST':
+
+            # session = requests.Session()
+            # session.cookies.update(request.COOKIES)
+
+            print('geted')
+
+            if request.user.is_authenticated:
+                print (session)
+
+            # session = requests.Session()
+
+
+            update_data = {
+                'pice_sifra' : str(pice_sifra),
+                'pice_naziv': request.POST.get('pice_naziv'),
+                'pice_opis': request.POST.get('pice_opis'),
+                'pice_kolicina_u_ml': request.POST.get('pice_kolicina_u_ml'),
+                'pice_sadrzi_alkohol': request.POST.get('pice_sadrzi_alkohol') == 'on',
+                'pice_vegansko': request.POST.get('pice_vegansko') == 'on',
+                'pice_poj_cijena': request.POST.get('pice_poj_cijena'),
+            }
+
+            update_response = session.patch(
+                f'http://localhost:8000/RESTfulAPI/pica_restful/{pice_sifra}/', 
+                json = update_data,
+                headers={'X-CSRFToken': request.COOKIES['csrftoken']}
+
+            )
+
+            if update_response.status_code == 200:
+                return redirect('main:pica_list_view_REST')  # Preusmjeri nakon ažuriranja
+            else:
+                return HttpResponse(f"Greška pri ažuriranju podataka{update_response.status_code}", status=update_response.status_code)
+
+        return render(request, 'main/admin/lista_pica_REST/update_form_REST/update_pice.html', {'pice': pice_data})
+
+
+@login_required
+def pica_delete_view(request, pice_sifra):
+    if request.user.is_authenticated:
+        session = requests.Session()
+        session.cookies.update(request.COOKIES)
+        delete_response = session.delete(
+            f'http://localhost:8000/RESTfulAPI/pica_restful/{pice_sifra}/',
+            headers={'X-CSRFToken': request.COOKIES['csrftoken']}
+        )
+
+        if delete_response.status_code == 204:
+            return redirect('main:pica_list_view_REST')  # Preusmjeri nakon brisanja
+        else:
+            return HttpResponse(f"Greška pri brisanju podataka {delete_response.status_code}", status=delete_response.status_code)
+
+
+@login_required
+def pica_create_view(request):
+
+    if request.user.is_authenticated:
+
+        session = requests.Session()
+        session.cookies.update(request.COOKIES)
+
+        if request.method == 'POST':
+            create_data = {
+                'pice_naziv': request.POST.get('pice_naziv'),
+                'pice_opis': request.POST.get('pice_opis'),
+                'pice_kolicina_u_ml': request.POST.get('pice_kolicina_u_ml'),
+                'pice_sadrzi_alkohol': request.POST.get('pice_sadrzi_alkohol') == 'on',
+                'pice_vegansko': request.POST.get('pice_vegansko') == 'on',
+                'pice_poj_cijena': request.POST.get('pice_poj_cijena'),
+            }
+
+            create_response = session.post(
+                'http://localhost:8000/RESTfulAPI/pica_restful/',
+                json=create_data,
+                headers={'X-CSRFToken': request.COOKIES['csrftoken']}
+            )
+
+            if create_response.status_code == 201:
+                return redirect('main:pica_list_view_REST')  # Preusmjeri nakon stvaranja
+            else:
+                return HttpResponse(f"Greška pri stvaranju podataka {create_response.status_code}", status=create_response.status_code)
+
+        return render(request, 'main/admin/lista_pica_REST/create_form_REST/add_pice.html')
+
+
+
  ## ## # from django.contrib.auth.models import User
 
 ## Create your views here.

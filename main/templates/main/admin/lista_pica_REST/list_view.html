@@ -1,0 +1,31 @@
+<h1>Lista pića (REST API)</h1>
+
+{% if pica_data %}
+    <ul>
+        {% for pice in pica_data %}
+        <li>
+            <a href="{% url 'main:pica_update_REST' pice.pice_sifra %}">
+                <button>{{ pice.pice_naziv }}</button>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <br>
+
+    <a href="{% url 'main:pica_create_REST' %}">
+        <button>Create New</button>
+    </a>
+
+    <a href="{% url 'main:homepage' %}">
+        <button>
+            nazad
+        </button>
+    </a>
+
+    
+
+
+{% else %}
+    <p>Nema podataka o pićima.</p>
+{% endif %}

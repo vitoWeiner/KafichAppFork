@@ -1,9 +1,18 @@
 from django.urls import path
 from . import views
 
+from rest_framework import routers
+from django.urls import path, include
+
+router = routers.DefaultRouter()
+router.register(r'pica_restful', views.PiceViewSet)
+
 app_name = 'main' 
 
-urlpatterns = [
+
+urlpatterns = []
+
+urlpatterns += [
 
     path('', views.homepage, name='homepage'),   
     path('manage-users/', views.manage_users, name='manage_users'),
@@ -47,6 +56,17 @@ urlpatterns += [
 
 
 
+
+]
+
+urlpatterns += [
+    path('RESTfulAPI/', include(router.urls)),         # API za dohvat update get i ostale crudove
+    path('RESTfulAPI/api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('pica_rest_api/', views.pica_list_view_REST, name='pica_list_view_REST'),
+    path('pica_update_rest_api/<uuid:pice_sifra>/', views.pica_update_view, name='pica_update_REST'),
+    path('pica_delete_rest_api/<uuid:pice_sifra>/', views.pica_delete_view, name='pica_delete_view_REST'),
+    path('pica_create_rest_api', views.pica_create_view, name='pica_create_REST')
+   
 
 ]
 
