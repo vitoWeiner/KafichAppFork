@@ -1,5 +1,5 @@
 # KafichApp
-## izradili: Vito Weiner i Antonio Delač
+## izradili: Antonio Delač i Vito Weiner
 Web aplikacija koja olakšava upravljanje kafićem.
 
 
@@ -28,8 +28,8 @@ ili se mogu upotrijebiti podaci za log in već postojećih admina i korisnika:
 
 ADMIN
 username: admin
-password: admin
+password: admin12345
 
 USER
-username: user1
-password: nana123nana123 
+username: user
+password: user12345 
