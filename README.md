@@ -2,16 +2,6 @@
 ## izradili: Antonio Delač i Vito Weiner
 Web aplikacija koja olakšava upravljanje kafićem.
 
-
-UPDATE - PORUKA ZA 4 PRAKTIČNI ZADATAK:
-implementirani su REST API endpointi te im se može pristupiti nakon prijave korisnika u aplikaciji putem slijedećih authentifikacijskih podataka:
-
-
-username: admin
-password: admin
-
-Otvara se izbornik, te se pod stavkom "lista pića (REST)" nalazi GUI sučelje za pozivanje endpointova.
-
 Zahtjevi
 
 Da biste pokrenuli aplikaciju, potrebno je imati instalirane slijedeće pakete:
